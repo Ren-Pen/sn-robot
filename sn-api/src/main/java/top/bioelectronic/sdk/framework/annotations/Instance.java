@@ -6,5 +6,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @Belong
+@Inherited
 public @interface Instance {
 }
