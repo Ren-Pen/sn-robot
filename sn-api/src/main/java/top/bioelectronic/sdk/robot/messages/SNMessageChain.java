@@ -1,10 +1,14 @@
 package top.bioelectronic.sdk.robot.messages;
 
-import top.bioelectronic.sdk.robot.messages.content.*;
 import lombok.NoArgsConstructor;
+import top.bioelectronic.sdk.core.Robot;
 import top.bioelectronic.sdk.robot.messages.content.*;
+import top.bioelectronic.sdk.robot.messages.meta.SNMessageSource;
+import top.bioelectronic.sdk.robot.messages.meta.SNQuoteReply;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,7 +22,7 @@ import static top.bioelectronic.sdk.robot.messages.content.SNPoke.*;
 public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
 
 
-    public SNMessageChain(SNMessage... message){
+    public SNMessageChain(SNMessage... message) {
         addAll(Arrays.asList(message));
     }
 
@@ -49,7 +53,7 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
         return this.stream().filter(miraiMessage -> msgClass.isAssignableFrom(miraiMessage.getClass())).toArray(SNMessage[]::new);
     }
 
-    public SNMessageChain plus(SNMessage SNMessage){
+    public SNMessageChain plus(SNMessage SNMessage) {
         add(SNMessage);
         return this;
     }
@@ -85,8 +89,28 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     }
 
     @Override
+    public SNMessageChain image(Robot robot, File file) throws IOException {
+        return plus(robot.uploadImg(file));
+    }
+
+    @Override
+    public SNMessageChain image(Robot robot, URL url) throws IOException {
+        return plus(robot.uploadImg(url));
+    }
+
+    @Override
     public SNMessageChain flashImage(String id) {
         return plus(new SNFlashImage(new SNImage(id)));
+    }
+
+    @Override
+    public SNMessageChain flashImage(Robot robot, File file) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(file)));
+    }
+
+    @Override
+    public SNMessageChain flashImage(Robot robot, URL url) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(url)));
     }
 
     @Override
@@ -159,11 +183,16 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
         return plus(GouYin);
     }
 
-    public boolean contains(Class<? extends SNMessage> clazz){
+    @Override
+    public SNMessageChain Quote(SNMessageSource source) {
+        return plus(new SNQuoteReply(source));
+    }
+
+    public boolean contains(Class<? extends SNMessage> clazz) {
         return this.stream().anyMatch(miraiMessage -> miraiMessage.getClass() == clazz);
     }
 
-    public boolean contains(SNMessage message){
+    public boolean contains(SNMessage message) {
         return this.stream().anyMatch(miraiMessage -> miraiMessage.equals(message));
     }
 

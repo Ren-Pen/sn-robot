@@ -1,13 +1,20 @@
 package top.bioelectronic.sdk.robot.messages;
 
+import top.bioelectronic.sdk.core.Robot;
 import top.bioelectronic.sdk.robot.messages.content.*;
+import top.bioelectronic.sdk.robot.messages.meta.SNMessageSource;
+import top.bioelectronic.sdk.robot.messages.meta.SNQuoteReply;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import static top.bioelectronic.sdk.robot.messages.content.SNPoke.*;
 
 public abstract class SNMessage implements Plus {
 
     @Override
-    public SNMessageChain plus(SNMessage msg){
+    public SNMessageChain plus(SNMessage msg) {
         return this.toChain().plus(msg);
     }
 
@@ -21,7 +28,7 @@ public abstract class SNMessage implements Plus {
         return this.toChain().text(text, args);
     }
 
-    public SNMessageChain toChain(){
+    public SNMessageChain toChain() {
         return new SNMessageChain().plus(this);
     }
 
@@ -46,8 +53,29 @@ public abstract class SNMessage implements Plus {
     }
 
     @Override
+    public SNMessageChain image(Robot robot, File file) throws IOException {
+        return plus(robot.uploadImg(file));
+    }
+
+    @Override
+    public SNMessageChain image(Robot robot, URL url) throws IOException {
+        return plus(robot.uploadImg(url));
+    }
+
+
+    @Override
     public SNMessageChain flashImage(String id) {
         return plus(new SNFlashImage(new SNImage(id)));
+    }
+
+    @Override
+    public SNMessageChain flashImage(Robot robot, File file) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(file)));
+    }
+
+    @Override
+    public SNMessageChain flashImage(Robot robot, URL url) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(url)));
     }
 
     @Override
@@ -118,6 +146,11 @@ public abstract class SNMessage implements Plus {
     @Override
     public SNMessageChain GouYin() {
         return plus(GouYin);
+    }
+
+    @Override
+    public SNMessageChain Quote(SNMessageSource source) {
+        return plus(new SNQuoteReply(source));
     }
 
 }
