@@ -13,6 +13,7 @@ import top.bioelectronic.sdk.robot.contact.SNMemberPermission;
 @Configuration(prefix = "demo")
 public class MyConfiguration implements DefaultConfiguration {
 
+    private boolean enable = false;
     private long target = 0L;
     private boolean atBot = false;
     private boolean atTarget = false;

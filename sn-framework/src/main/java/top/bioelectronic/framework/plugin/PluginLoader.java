@@ -72,7 +72,7 @@ public class PluginLoader {
     public Class<? extends BasePlugin> getPluginClass(ClassLoader classLoader, PluginInformation information) throws ClassNotFoundException {
         Class<? extends BasePlugin> pluginClass = (Class<? extends BasePlugin>) classLoader.loadClass(information.getPath());
         try {
-            String sdk_version = (String) pluginClass.getDeclaredField("SDK_VERSION").get(null);
+            String sdk_version = (String) pluginClass.getField("SDK_VERSION").get(null);
             log.debug("{} 插件目标SDK版本：{}", pluginClass, sdk_version);
             if (!BasePlugin.SDK_VERSION.equals(sdk_version)) {
                 log.warn("{} 非目标版本的插件，可能会造成运行异常！", pluginClass);

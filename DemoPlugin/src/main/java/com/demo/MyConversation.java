@@ -18,7 +18,7 @@ public class MyConversation extends Conversation<SNGroupMessageEvent> {
     @Override
     public void onLoading() throws Exception {
 
-        setEnable(false);
+        setEnable(config.isEnable());
 
         TextConversationWrapper wrapper = new TextConversationWrapper(config.getTarget(), config.getPrefix())
                 .addCommand(

@@ -19,6 +19,8 @@ public class MyConversation2 extends Conversation<SNGroupMessageEvent> {
     @Override
     public void onLoading() throws Exception {
 
+        setEnable(config.isEnable());
+
         CallbackConversationWrapper wrapper = new CallbackConversationWrapper(config.getTarget(), config.getPrefix())
                 .addCommand("(\\d{4})-(\\d{2}-(\\d\\d))", ((target, chain, args) -> {
                     chain.plus(new SNText("已执行，捕获列表：{}", Arrays.toString(args)));
