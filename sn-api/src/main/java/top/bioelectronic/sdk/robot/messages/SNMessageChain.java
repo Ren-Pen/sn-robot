@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static top.bioelectronic.sdk.robot.messages.content.SNPoke.*;
+
 @NoArgsConstructor
 public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
 
@@ -80,6 +82,81 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     @Override
     public SNMessageChain image(String id) {
         return plus(new SNImage(id));
+    }
+
+    @Override
+    public SNMessageChain flashImage(String id) {
+        return plus(new SNFlashImage(new SNImage(id)));
+    }
+
+    @Override
+    public SNMessageChain poke(SNPoke poke) {
+        return plus(poke);
+    }
+
+    @Override
+    public SNMessageChain ChuoYiChuo() {
+        return plus(ChuoYiChuo);
+    }
+
+    @Override
+    public SNMessageChain BiXin() {
+        return plus(BiXin);
+    }
+
+    @Override
+    public SNMessageChain DianZan() {
+        return plus(DianZan);
+    }
+
+    @Override
+    public SNMessageChain XinSui() {
+        return plus(XinSui);
+    }
+
+    @Override
+    public SNMessageChain LiuLiuLiu() {
+        return plus(LiuLiuLiu);
+    }
+
+    @Override
+    public SNMessageChain FangDaZhao() {
+        return plus(FangDaZhao);
+    }
+
+    @Override
+    public SNMessageChain BaoBeiQiu() {
+        return plus(BaoBeiQiu);
+    }
+
+    @Override
+    public SNMessageChain Rose() {
+        return plus(Rose);
+    }
+
+    @Override
+    public SNMessageChain ZhaoHuanShu() {
+        return plus(ZhaoHuanShu);
+    }
+
+    @Override
+    public SNMessageChain RangNiPi() {
+        return plus(RangNiPi);
+    }
+
+    @Override
+    public SNMessageChain JieYin() {
+        return plus(JieYin);
+    }
+
+    @Override
+    public SNMessageChain ShouLei() {
+        return plus(ShouLei);
+    }
+
+    @Override
+    public SNMessageChain GouYin() {
+        return plus(GouYin);
     }
 
     public boolean contains(Class<? extends SNMessage> clazz){
