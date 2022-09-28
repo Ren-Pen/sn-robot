@@ -1,0 +1,11 @@
+{
+  "name": "demo plugin",
+  "path": "com.demo.DemoPlugin",
+  "version": "1.0.1",
+  "author": "xzy5487",
+  "description": "This is a demo plugin",
+  "accesses": [
+    "ROOT"
+  ],
+  "extension": {}
+}
