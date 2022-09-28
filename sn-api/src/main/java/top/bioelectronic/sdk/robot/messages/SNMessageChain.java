@@ -1,6 +1,6 @@
 package top.bioelectronic.sdk.robot.messages;
 
-import com.bioelectronic.sdk.robot.messages.content.*;
+import top.bioelectronic.sdk.robot.messages.content.*;
 import lombok.NoArgsConstructor;
 import top.bioelectronic.sdk.robot.messages.content.*;
 
