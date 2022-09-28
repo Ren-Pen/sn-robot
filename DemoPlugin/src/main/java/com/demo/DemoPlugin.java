@@ -1,4 +1,4 @@
-package top.demo;
+package com.demo;
 
 import top.bioelectronic.sdk.config.ConfigLocation;
 import top.bioelectronic.sdk.core.Robot;

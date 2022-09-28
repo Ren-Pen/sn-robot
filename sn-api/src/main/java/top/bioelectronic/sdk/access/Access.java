@@ -16,6 +16,7 @@ public enum Access {
     BEHAVIOR_GET_BOT_ID(BEHAVIOR, Dangerous.NORMAL, "获取当前登录ID权限"),
     BEHAVIOR_IMG_UPLOAD(BEHAVIOR, Dangerous.PRIVACY, "上传图片权限"),
     BEHAVIOR_RECALL(BEHAVIOR, Dangerous.PRIVACY, "消息撤回权限"),
+    BEHAVIOR_NUDGE(BEHAVIOR, Dangerous.NORMAL, "戳一戳权限"),
 
 
     SEND(ROOT, Dangerous.DANGEROUS, "发送消息父权限"),

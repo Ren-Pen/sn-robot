@@ -1,4 +1,4 @@
-package top.demo;
+package com.demo;
 
 import top.bioelectronic.sdk.framework.annotations.Mount;
 import top.bioelectronic.sdk.robot.events.messages.SNGroupMessageEvent;

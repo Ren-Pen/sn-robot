@@ -1,5 +1,8 @@
 package top.bioelectronic.framework.plugin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.proxy.Enhancer;
 import top.bioelectronic.framework.access.AccessInterceptor;
 import top.bioelectronic.framework.core.BaseRobot;
 import top.bioelectronic.framework.event.EventChannelImpl;
@@ -15,9 +18,6 @@ import top.bioelectronic.sdk.logger.Marker;
 import top.bioelectronic.sdk.plugin.BasePlugin;
 import top.bioelectronic.sdk.plugin.Plugin;
 import top.bioelectronic.sdk.plugin.PluginInformation;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.cglib.proxy.Enhancer;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +71,19 @@ public class PluginLoader {
 
     public Class<? extends BasePlugin> getPluginClass(ClassLoader classLoader, PluginInformation information) throws ClassNotFoundException {
         Class<? extends BasePlugin> pluginClass = (Class<? extends BasePlugin>) classLoader.loadClass(information.getPath());
+        try {
+            String sdk_version = (String) pluginClass.getDeclaredField("SDK_VERSION").get(null);
+            log.debug("{} 插件目标SDK版本：{}", pluginClass, sdk_version);
+            if (!BasePlugin.SDK_VERSION.equals(sdk_version)) {
+                log.warn("{} 非目标版本的插件，可能会造成运行异常！", pluginClass);
+            }
+
+
+        } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
+            log.warn("{} 无法获取插件SDK版本信息！", pluginClass);
+        }
+
+
         return pluginClass;
     }
 

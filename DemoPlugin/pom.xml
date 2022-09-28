@@ -12,7 +12,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <sn-api.version>M1.0</sn-api.version>
-        <sn-bot.dir>D:/IdeaProjects/SNRobot/out</sn-bot.dir>
+        <sn-bot.dir>D:/sn-robot-dev/release</sn-bot.dir>
     </properties>
 
 
