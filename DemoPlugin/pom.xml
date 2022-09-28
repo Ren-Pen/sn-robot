@@ -18,7 +18,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.bioelectronic</groupId>
+            <groupId>top.bioelectronic</groupId>
             <artifactId>sn-api</artifactId>
             <version>${sn-api.version}</version>
             <scope>provided</scope>
