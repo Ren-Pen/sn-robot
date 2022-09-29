@@ -17,6 +17,8 @@ public enum Access {
     BEHAVIOR_IMG_UPLOAD(BEHAVIOR, Dangerous.PRIVACY, "上传图片权限"),
     BEHAVIOR_RECALL(BEHAVIOR, Dangerous.PRIVACY, "消息撤回权限"),
     BEHAVIOR_NUDGE(BEHAVIOR, Dangerous.NORMAL, "戳一戳权限"),
+    BEHAVIOR_KICK_MEMBER(BEHAVIOR, Dangerous.DANGEROUS, "移除群成员权限"),
+    BEHAVIOR_MUTE_MEMBER(BEHAVIOR, Dangerous.PRIVACY, "禁言/解禁群成员权限"),
 
 
     SEND(ROOT, Dangerous.DANGEROUS, "发送消息父权限"),

@@ -27,6 +27,7 @@ public interface Robot {
 
     /**
      * 获取BOT ID
+     *
      * @return
      */
     @AccessControl(require = Access.BEHAVIOR_GET_BOT_ID)
@@ -34,8 +35,10 @@ public interface Robot {
 
     /**
      * 发送消息到好友
+     *
      * @param friend
      * @param chain
+     *
      * @return
      */
     @AccessControl(require = {Access.SEND_FRIEND})
@@ -43,8 +46,10 @@ public interface Robot {
 
     /**
      * 发送消息到群组
+     *
      * @param group
      * @param chain
+     *
      * @return
      */
     @AccessControl(require = {Access.SEND_GROUP})
@@ -52,8 +57,10 @@ public interface Robot {
 
     /**
      * 发送消息到陌生人
+     *
      * @param stranger
      * @param chain
+     *
      * @return
      */
     @AccessControl(require = {Access.SEND_STRANGER})
@@ -61,8 +68,10 @@ public interface Robot {
 
     /**
      * 发送消息到群成员
+     *
      * @param member
      * @param chain
+     *
      * @return
      */
     @AccessControl(require = {Access.SEND_GROUP_MEMBER})
@@ -70,7 +79,9 @@ public interface Robot {
 
     /**
      * 根据id获取好友
+     *
      * @param friendId
+     *
      * @return
      */
     @AccessControl(require = {Access.GET_FRIEND})
@@ -78,7 +89,9 @@ public interface Robot {
 
     /**
      * 根据id获取群组
+     *
      * @param groupId
+     *
      * @return
      */
     @AccessControl(require = {Access.GET_GROUP})
@@ -86,8 +99,10 @@ public interface Robot {
 
     /**
      * 根据群组和id获取群成员
+     *
      * @param group
      * @param memberId
+     *
      * @return
      */
     @AccessControl(require = {Access.GET_GROUP_MEMBER})
@@ -95,7 +110,9 @@ public interface Robot {
 
     /**
      * 根据id获取陌生人
+     *
      * @param strangerId
+     *
      * @return
      */
     @AccessControl(require = {Access.GET_STRANGER})
@@ -103,6 +120,7 @@ public interface Robot {
 
     /**
      * 获取好友列表
+     *
      * @return
      */
     @AccessControl(require = Access.GET_FRIENDS)
@@ -110,6 +128,7 @@ public interface Robot {
 
     /**
      * 获取群列表
+     *
      * @return
      */
     @AccessControl(require = Access.GET_GROUPS)
@@ -117,7 +136,9 @@ public interface Robot {
 
     /**
      * 获取群成员列表
+     *
      * @param group
+     *
      * @return
      */
     @Nullable
@@ -126,8 +147,11 @@ public interface Robot {
 
     /**
      * 上传图片到服务器，获取图片对象
+     *
      * @param file
+     *
      * @return
+     *
      * @throws IOException
      */
     @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
@@ -135,9 +159,12 @@ public interface Robot {
 
     /**
      * 上传图片到服务器，获取图片对象
+     *
      * @param url
      * @param forceUpdate 强制服务器刷新图片文件，即使md5相同
+     *
      * @return
+     *
      * @throws IOException
      */
     @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
@@ -145,8 +172,11 @@ public interface Robot {
 
     /**
      * 上传图片到服务器，获取图片对象
+     *
      * @param url
+     *
      * @return
+     *
      * @throws IOException
      */
     @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
@@ -154,6 +184,7 @@ public interface Robot {
 
     /**
      * 戳一戳
+     *
      * @param target 被戳的目标
      * @param sendTo 发送到哪里
      */
@@ -162,14 +193,46 @@ public interface Robot {
 
     /**
      * 撤回消息
+     *
      * @param source
+     *
      * @return
      */
     @AccessControl(require = Access.BEHAVIOR_RECALL)
     boolean recall(SNMessageSource source);
 
     /**
+     * 禁言群成员
+     *
+     * @param member
+     * @param durationSeconds 禁言秒数
+     *
+     * @return
+     */
+    @AccessControl(require = Access.BEHAVIOR_MUTE_MEMBER)
+    boolean mute(SNMember member, int durationSeconds);
+
+    /**
+     * 解除禁言
+     * @param member
+     * @return
+     */
+    @AccessControl(require = Access.BEHAVIOR_MUTE_MEMBER)
+    boolean unmute(SNNormalMember member);
+
+    /**
+     * 踢出成员
+     * @param member
+     * @param message 踢出消息
+     * @param block 是否拉黑
+     * @return
+     */
+    @AccessControl(require = Access.BEHAVIOR_KICK_MEMBER)
+    boolean kick(SNNormalMember member, String message, boolean block);
+
+    /**
      * 获取核心类别
+     *
      * @return
      */
     String getCoreType();
