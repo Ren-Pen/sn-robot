@@ -1,24 +1,29 @@
 package top.bioelectronic.framework.core;
 
 
+import lombok.extern.slf4j.Slf4j;
+import top.bioelectronic.framework.commons.ClassUtils;
 import top.bioelectronic.sdk.framework.Context;
 import top.bioelectronic.sdk.framework.InitializationBean;
 import top.bioelectronic.sdk.framework.SystemInstance;
-import lombok.extern.slf4j.Slf4j;
-import top.bioelectronic.framework.commons.ClassUtils;
 import top.bioelectronic.sdk.framework.annotations.Mount;
 import top.bioelectronic.sdk.framework.converters.Converter;
 import top.bioelectronic.sdk.logger.Marker;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 @SystemInstance
 @Slf4j
 @Marker("类型转换器")
-public class Converters extends ConcurrentHashMap<Class<?>, Converter> implements InitializationBean {
+public class Converters implements InitializationBean {
 
-    private final ConcurrentHashMap<Class<?>, Converter> reverse_converters = new ConcurrentHashMap<>();
+    private HashMap<Class, Converter> forwardMap;
+    private HashMap<Class, Converter> reverseMap;
+
+    private LinkedHashMap<Class, Converter> cacheLRU;
 
     @Mount
     private Context context;
@@ -26,19 +31,32 @@ public class Converters extends ConcurrentHashMap<Class<?>, Converter> implement
     @Override
     public void onLoad() throws Exception {
         List<Converter> beans = context.getBeans(Converter.class);
+        forwardMap = new HashMap<>(beans.size());
+        reverseMap = new HashMap<>(beans.size());
+        int capacity = (int) (beans.size() * 2.5);
+        cacheLRU = new LinkedHashMap<Class, Converter>(capacity) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry eldest) {
+                return size() > capacity;
+            }
+        };
+
         for (Converter converter : beans) {
             Class<?> t = ClassUtils.getGenerateClass(converter.getClass(), 0);
-            if (containsKey(t)) {
-                log.warn("{} 冲突的转换类型 源：{} 目标：{}", t, converter.getClass(), get(t).getClass());
+            Class<?> r = ClassUtils.getGenerateClass(converter.getClass(), 1);
+            if (forwardMap.containsKey(t)) {
+                log.warn("{} 冲突的转换类型，目标转换器被覆盖 源：{} 目标：{}", t, converter.getClass(), forwardMap.get(t).getClass());
                 continue;
             }
 
-            Class<?> r = ClassUtils.getGenerateClass(converter.getClass(), 1);
+            forwardMap.put(t, converter);
+            reverseMap.put(r, converter);
 
             log.debug("{} 转换器已装载", converter.getClass());
-            put(t, converter);
-            reverse_converters.put(r, converter);
+
+
         }
+
     }
 
     @Override
@@ -46,98 +64,69 @@ public class Converters extends ConcurrentHashMap<Class<?>, Converter> implement
 
     }
 
+
+    private Converter findAndCached(HashMap<Class, Converter> storage, Class clazz) {
+        if (storage.containsKey(clazz)) {
+            return storage.get(clazz);
+        }
+        if (cacheLRU.containsKey(clazz)) {
+            return cacheLRU.get(clazz);
+        }
+        for (Class aClass : storage.keySet()) {
+            if (aClass.isAssignableFrom(clazz)) {
+                Converter value = storage.get(aClass);
+                if (cacheLRU.containsKey(clazz)) {
+                    log.debug("缓存被覆盖 源：{}", clazz);
+                }
+                cacheLRU.put(clazz, value);
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+
     public <T, R, B extends BaseRobot> R convert(T object, Class<R> clazz) {
-
-        if (object == null) return null;
-        Class<?> typeClass = object.getClass();
-        Class<?> tempC = typeClass;
-
-        try {
-            while (tempC != Object.class) {
-                if (containsKey(tempC)) {
-                    Converter<T, R, B> converter = get(tempC);
-                    if (clazz.isAssignableFrom(ClassUtils.getGenerateClass(converter.getClass(), 1))) {
-                        if (!containsKey(typeClass)) {
-                            put(typeClass, converter);
-                        }
-                        return converter.convert(object);
-                    }
-                }
-                for (Class<?> iterface : tempC.getInterfaces()) {
-                    while (iterface != null) {
-                        if (containsKey(iterface)) {
-                            Converter<T, R, B> converter = get(iterface);
-                            if (clazz.isAssignableFrom(ClassUtils.getGenerateClass(converter.getClass(), 1))) {
-                                // 找到了目标，加入缓存
-                                put(typeClass, converter);
-                                return converter.convert(object);
-                            }
-                        }
-                        iterface = iterface.getSuperclass();
-                    }
-                }
-                tempC = tempC.getSuperclass();
-            }
-        }catch (Throwable t){
-            log.debug("{} 转换异常", typeClass, t);
+        Converter converter = findAndCached(forwardMap, object.getClass());
+        if (converter == null) {
+            log.debug("{} 无该类型转换器", object.getClass());
         }
-
-        log.debug("{} 无该类型转换器", typeClass);
-
-
+        try {
+            Object o = converter.convert(object);
+            if (clazz.isAssignableFrom(o.getClass())) {
+                return (R) o;
+            } else {
+                cacheLRU.remove(object.getClass());
+                log.debug("{} 转换得到了错误的返回类型：{}，缓存被移除。", object.getClass(), o.getClass());
+            }
+        } catch (Throwable t) {
+            cacheLRU.remove(object.getClass());
+            log.debug("{} 转换异常，移除缓存", object.getClass(), t);
+        }
         return null;
-
 
     }
 
-    public <T, R, B extends BaseRobot> T reverseConvert(R object, Class<T> clazz){
-        if (object == null) return null;
-        Class<?> typeClass = object.getClass();
-        Class<?> tempC = typeClass;
-
-        try {
-            while (tempC != Object.class) {
-                if (reverse_converters.containsKey(tempC)) {
-                    Converter<T, R, B> converter = reverse_converters.get(tempC);
-                    if (clazz.isAssignableFrom(ClassUtils.getGenerateClass(converter.getClass(), 0))) {
-                        if (!reverse_converters.containsKey(typeClass)) {
-                            reverse_converters.put(typeClass, converter);
-                        }
-                        return converter.reverse_convert(object);
-                    }
-                }
-                for (Class<?> iterface : tempC.getInterfaces()) {
-                    while (iterface != null) {
-                        if (reverse_converters.containsKey(iterface)) {
-                            Converter<T, R, B> converter = reverse_converters.get(iterface);
-                            if (clazz.isAssignableFrom(ClassUtils.getGenerateClass(converter.getClass(), 0))) {
-                                // 找到了目标，加入缓存
-                                if (!reverse_converters.containsKey(typeClass)) {
-                                    reverse_converters.put(typeClass, converter);
-                                }
-                                return converter.reverse_convert(object);
-                            }
-                        }
-                        iterface = iterface.getSuperclass();
-                    }
-                }
-                tempC = tempC.getSuperclass();
-            }
-        }catch (Throwable t){
-            log.debug("{} 转换异常", typeClass, t);
+    public <T, R, B extends BaseRobot> T reverseConvert(R object, Class<T> clazz) {
+        Converter converter = findAndCached(reverseMap, object.getClass());
+        if (converter == null) {
+            log.debug("{} 无该类型转换器", object.getClass());
         }
-
-        log.debug("{} 无该类型转换器", typeClass);
-
-
+        try {
+            Object o = converter.convert(object);
+            if (clazz.isAssignableFrom(o.getClass())) {
+                return (T) o;
+            } else {
+                cacheLRU.remove(object.getClass());
+                log.debug("{} 转换得到了错误的返回类型：{}，缓存被移除。", object.getClass(), o.getClass());
+            }
+        } catch (Throwable t) {
+            cacheLRU.remove(object.getClass());
+            log.debug("{} 转换异常，移除缓存", object.getClass(), t);
+        }
         return null;
-
-
-
     }
-
-
-
 
 
 }
