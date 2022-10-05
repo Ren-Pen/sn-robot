@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.bioelectronic.top/plugin http://www.bioelectronic.top/schema/plugin.xsd
+                            http://www.bioelectronic.top/cli http://www.bioelectronic.top/schema/bridge-cli.xsd"
+        xmlns="http://www.bioelectronic.top/plugin"
+        xmlns:cli="http://www.bioelectronic.top/cli">
+    <name>demo plugin</name>
+    <path>com.demo.DemoPlugin</path>
+    <version>1.0.1</version>
+    <author>xzy5487</author>
+    <description><![CDATA[This is a demo plugin!]]></description>
+    <permissions>
+        <permission use="ROOT"/>
+        <permission use="BEHAVIOR_IMG_UPLOAD"/>
+    </permissions>
+
+    <extension>
+        <cli:console prefix="demo">
+            <cli:command bean="classpath:com.demo.DemoPlugin" method="demo" name="demo">
+                <cli:argument simplify="d" name="debug"/>
+                <cli:argument simplify="e" name="exception"/>
+            </cli:command>
+        </cli:console>
+    </extension>
+</plugin>

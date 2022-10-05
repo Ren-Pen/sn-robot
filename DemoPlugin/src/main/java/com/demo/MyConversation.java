@@ -1,11 +1,11 @@
 package com.demo;
 
-import top.bioelectronic.sdk.core.Robot;
-import top.bioelectronic.sdk.framework.annotations.Mount;
-import top.bioelectronic.sdk.robot.events.messages.SNGroupMessageEvent;
-import top.bioelectronic.sdk.robot.utils.conversation.Conversation;
-import top.bioelectronic.sdk.robot.utils.conversation.wrappers.TextConversationWrapper;
-import top.bioelectronic.sdk.plugin.BasePlugin;
+import com.slimenano.sdk.core.Robot;
+import com.slimenano.sdk.framework.annotations.Mount;
+import com.slimenano.sdk.robot.events.messages.SNGroupMessageEvent;
+import com.slimenano.sdk.robot.utils.conversation.Conversation;
+import com.slimenano.sdk.robot.utils.conversation.wrappers.TextConversationWrapper;
+import com.slimenano.sdk.plugin.BasePlugin;
 
 public class MyConversation extends Conversation<SNGroupMessageEvent> {
 

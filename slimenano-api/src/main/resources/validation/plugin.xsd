@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.bioelectronic.top/plugin"
+            elementFormDefault="qualified"
+            xmlns:p="http://www.bioelectronic.top/plugin">
+    <xsd:element name="plugin">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="name"/>
+                <xsd:element name="path"/>
+                <xsd:element name="version"/>
+                <xsd:element name="author"/>
+                <xsd:element name="description"/>
+                <xsd:element name="permissions">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="permission" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:attribute use="required" name="use" type="p:permission"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                    <xsd:unique name="permission-unique">
+                        <xsd:selector xpath="p:permission"/>
+                        <xsd:field xpath="@name"/>
+                    </xsd:unique>
+                </xsd:element>
+                <xsd:element name="extension">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:any minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:simpleType name="permission" final="restriction">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ROOT"/>
+            <xsd:enumeration value="TEST"/>
+
+            <xsd:enumeration value="BEHAVIOR"/>
+            <xsd:enumeration value="BEHAVIOR_GET_BOT_ID"/>
+            <xsd:enumeration value="BEHAVIOR_IMG_UPLOAD"/>
+            <xsd:enumeration value="BEHAVIOR_RECALL"/>
+            <xsd:enumeration value="BEHAVIOR_NUDGE"/>
+            <xsd:enumeration value="BEHAVIOR_KICK_MEMBER"/>
+            <xsd:enumeration value="BEHAVIOR_MUTE_MEMBER"/>
+
+
+            <xsd:enumeration value="SEND"/>
+
+            <xsd:enumeration value="SEND_FRIEND"/>
+            <xsd:enumeration value="SEND_GROUP"/>
+            <xsd:enumeration value="SEND_STRANGER"/>
+            <xsd:enumeration value="SEND_GROUP_MEMBER"/>
+
+
+            <xsd:enumeration value="GET"/>
+
+            <xsd:enumeration value="GET_FRIENDS"/>
+            <xsd:enumeration value="GET_GROUPS"/>
+            <xsd:enumeration value="GET_GROUP_MEMBERS"/>
+
+            <xsd:enumeration value="GET_FRIEND"/>
+            <xsd:enumeration value="GET_GROUP"/>
+            <xsd:enumeration value="GET_GROUP_MEMBER"/>
+            <xsd:enumeration value="GET_STRANGER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

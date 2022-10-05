@@ -3,9 +3,9 @@ package com.demo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.bioelectronic.sdk.config.Configuration;
-import top.bioelectronic.sdk.config.DefaultConfiguration;
-import top.bioelectronic.sdk.robot.contact.SNMemberPermission;
+import com.slimenano.sdk.config.Configuration;
+import com.slimenano.sdk.config.DefaultConfiguration;
+import com.slimenano.sdk.robot.contact.SNMemberPermission;
 
 @Data
 @NoArgsConstructor

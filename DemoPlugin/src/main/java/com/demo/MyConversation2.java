@@ -1,10 +1,10 @@
 package com.demo;
 
-import top.bioelectronic.sdk.framework.annotations.Mount;
-import top.bioelectronic.sdk.robot.events.messages.SNGroupMessageEvent;
-import top.bioelectronic.sdk.robot.messages.content.SNText;
-import top.bioelectronic.sdk.robot.utils.conversation.Conversation;
-import top.bioelectronic.sdk.robot.utils.conversation.wrappers.CallbackConversationWrapper;
+import com.slimenano.sdk.framework.annotations.Mount;
+import com.slimenano.sdk.robot.events.messages.SNGroupMessageEvent;
+import com.slimenano.sdk.robot.messages.content.SNText;
+import com.slimenano.sdk.robot.utils.conversation.Conversation;
+import com.slimenano.sdk.robot.utils.conversation.wrappers.CallbackConversationWrapper;
 
 import java.util.Arrays;
 

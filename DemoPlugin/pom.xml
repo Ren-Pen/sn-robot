@@ -11,16 +11,16 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <sn-api.version>M1.0</sn-api.version>
+        <slimenano-api.version>M1.0</slimenano-api.version>
         <sn-bot.dir>D:/sn-robot-dev/release</sn-bot.dir>
     </properties>
 
 
     <dependencies>
         <dependency>
-            <groupId>top.bioelectronic</groupId>
-            <artifactId>sn-api</artifactId>
-            <version>${sn-api.version}</version>
+            <groupId>com.slimenano</groupId>
+            <artifactId>slimenano-api</artifactId>
+            <version>${slimenano-api.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

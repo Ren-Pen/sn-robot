@@ -7,5 +7,16 @@
   "accesses": [
     "ROOT"
   ],
-  "extension": {}
+  "extension": {
+    "console": [
+      {
+        "command": "demo",
+        "beanName": "demoPlugin",
+        "method": "demo",
+        "simple": {
+          "d": "debug"
+        }
+      }
+    ]
+  }
 }
