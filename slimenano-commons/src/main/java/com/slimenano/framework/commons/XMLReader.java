@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
@@ -129,6 +130,9 @@ public class XMLReader {
     }
 
     private static String put(HashMap<String, Object> map, String key, Object value) {
+        if (key.contains(":")){
+            key = key.substring(key.lastIndexOf(":")+1);
+        }
         if (map.containsKey(key)) {
             Object o = map.get(key);
             if (o instanceof LinkedList) {
@@ -152,9 +156,41 @@ public class XMLReader {
             if (clazz == HashMap.class && emo instanceof HashMap) {
                 return (T) emo;
             }
-            if (emo instanceof String && clazz == String.class) {
-                return (T) emo;
+            String emoStr = String.valueOf(emo);
+            if (clazz == String.class) {
+                return (T) emoStr;
             }
+            if (clazz == boolean.class || clazz == Boolean.class){
+                return (T) (Object) Boolean.parseBoolean(emoStr);
+            }
+            if (clazz == int.class || clazz == Integer.class){
+                return (T) (Object) Integer.parseInt(emoStr);
+            }
+            if (clazz == float.class || clazz == Float.class){
+                return (T) (Object) Float.parseFloat(emoStr);
+            }
+            if (clazz == double.class || clazz == Double.class){
+                return (T) (Object) Double.parseDouble(emoStr);
+            }
+            if (clazz == short.class || clazz == Short.class){
+                return (T) (Object) Short.parseShort(emoStr);
+            }
+            if (clazz == byte.class || clazz == Byte.class){
+                return (T) (Object) Byte.parseByte(emoStr);
+            }
+            if (clazz == char.class || clazz == Character.class){
+                return (T) (Object) emoStr.charAt(0);
+            }
+            if (clazz.isEnum()){
+                for (T enumConstant : clazz.getEnumConstants()) {
+                    if (emoStr.equalsIgnoreCase(enumConstant.toString())){
+                        return enumConstant;
+                    }
+                }
+                throw new SAXException("无法找到对应的枚举！值：" + emoStr);
+            }
+
+
             if (emo instanceof LinkedList && clazz.isArray()) {
                 T array = (T) Array.newInstance(clazz.getComponentType(), ((LinkedList) emo).size());
                 for (int i = 0; i < ((LinkedList) emo).size(); i++) {
@@ -173,7 +209,17 @@ public class XMLReader {
                 return array;
             }
 
-            if (emo instanceof HashMap && clazz != String.class) {
+            if (emo instanceof HashMap && Map.class.isAssignableFrom(clazz)){
+
+                if (Modifier.isAbstract(clazz.getModifiers()) || clazz.isInterface()){
+                    return (T) emo;
+                }else{
+                    return clazz.getConstructor(Map.class).newInstance(emo);
+                }
+
+            }
+
+            if (emo instanceof HashMap) {
                 T t = clazz.newInstance();
                 List<Field> allField = ClassUtils.getAllField(clazz);
                 for (Field field : allField) {

@@ -1,6 +1,6 @@
 package com.slimenano.sdk.core;
 
-import com.slimenano.sdk.access.Access;
+import com.slimenano.sdk.access.Permission;
 import com.slimenano.sdk.common.Nullable;
 import com.slimenano.sdk.framework.annotations.AccessControl;
 import com.slimenano.sdk.robot.contact.SNContact;
@@ -22,7 +22,7 @@ public interface Robot {
     /**
      * 测试用方法，没有实际效果
      */
-    @AccessControl(require = {Access.TEST})
+    @AccessControl(require = {Permission.TEST})
     void test();
 
     /**
@@ -30,7 +30,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = Access.BEHAVIOR_GET_BOT_ID)
+    @AccessControl(require = Permission.BEHAVIOR_GET_BOT_ID)
     long getBotId();
 
     /**
@@ -41,7 +41,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.SEND_FRIEND})
+    @AccessControl(require = {Permission.SEND_FRIEND})
     SNMessageSource sendMessage(SNFriend friend, SNMessageChain chain);
 
     /**
@@ -52,7 +52,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.SEND_GROUP})
+    @AccessControl(require = {Permission.SEND_GROUP})
     SNMessageSource sendMessage(SNGroup group, SNMessageChain chain);
 
     /**
@@ -63,7 +63,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.SEND_STRANGER})
+    @AccessControl(require = {Permission.SEND_STRANGER})
     SNMessageSource sendMessage(SNStranger stranger, SNMessageChain chain);
 
     /**
@@ -74,7 +74,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.SEND_GROUP_MEMBER})
+    @AccessControl(require = {Permission.SEND_GROUP_MEMBER})
     SNMessageSource sendMessage(SNNormalMember member, SNMessageChain chain);
 
     /**
@@ -84,7 +84,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.GET_FRIEND})
+    @AccessControl(require = {Permission.GET_FRIEND})
     SNFriend getFriend(long friendId);
 
     /**
@@ -94,7 +94,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.GET_GROUP})
+    @AccessControl(require = {Permission.GET_GROUP})
     SNGroup getGroup(long groupId);
 
     /**
@@ -105,7 +105,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.GET_GROUP_MEMBER})
+    @AccessControl(require = {Permission.GET_GROUP_MEMBER})
     SNMember getGroupMember(SNGroup group, long memberId);
 
     /**
@@ -115,7 +115,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = {Access.GET_STRANGER})
+    @AccessControl(require = {Permission.GET_STRANGER})
     SNStranger getStranger(long strangerId);
 
     /**
@@ -123,7 +123,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = Access.GET_FRIENDS)
+    @AccessControl(require = Permission.GET_FRIENDS)
     List<SNFriend> getFriendList();
 
     /**
@@ -131,7 +131,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = Access.GET_GROUPS)
+    @AccessControl(require = Permission.GET_GROUPS)
     List<SNGroup> getGroupsList();
 
     /**
@@ -142,7 +142,7 @@ public interface Robot {
      * @return
      */
     @Nullable
-    @AccessControl(require = Access.GET_GROUP_MEMBERS)
+    @AccessControl(require = Permission.GET_GROUP_MEMBERS)
     List<SNMember> getGroupMembers(SNGroup group);
 
     /**
@@ -154,7 +154,7 @@ public interface Robot {
      *
      * @throws IOException
      */
-    @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
+    @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD)
     SNImage uploadImg(File file) throws IOException;
 
     /**
@@ -167,7 +167,7 @@ public interface Robot {
      *
      * @throws IOException
      */
-    @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
+    @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD)
     SNImage uploadImg(URL url, boolean forceUpdate) throws IOException;
 
     /**
@@ -179,7 +179,7 @@ public interface Robot {
      *
      * @throws IOException
      */
-    @AccessControl(require = Access.BEHAVIOR_IMG_UPLOAD)
+    @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD)
     SNImage uploadImg(URL url) throws IOException;
 
     /**
@@ -188,7 +188,7 @@ public interface Robot {
      * @param target 被戳的目标
      * @param sendTo 发送到哪里
      */
-    @AccessControl(require = Access.BEHAVIOR_NUDGE)
+    @AccessControl(require = Permission.BEHAVIOR_NUDGE)
     void nudge(SNUser target, SNContact sendTo);
 
     /**
@@ -198,7 +198,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = Access.BEHAVIOR_RECALL)
+    @AccessControl(require = Permission.BEHAVIOR_RECALL)
     boolean recall(SNMessageSource source);
 
     /**
@@ -209,7 +209,7 @@ public interface Robot {
      *
      * @return
      */
-    @AccessControl(require = Access.BEHAVIOR_MUTE_MEMBER)
+    @AccessControl(require = Permission.BEHAVIOR_MUTE_MEMBER)
     boolean mute(SNMember member, int durationSeconds);
 
     /**
@@ -217,7 +217,7 @@ public interface Robot {
      * @param member
      * @return
      */
-    @AccessControl(require = Access.BEHAVIOR_MUTE_MEMBER)
+    @AccessControl(require = Permission.BEHAVIOR_MUTE_MEMBER)
     boolean unmute(SNNormalMember member);
 
     /**
@@ -227,7 +227,7 @@ public interface Robot {
      * @param block 是否拉黑
      * @return
      */
-    @AccessControl(require = Access.BEHAVIOR_KICK_MEMBER)
+    @AccessControl(require = Permission.BEHAVIOR_KICK_MEMBER)
     boolean kick(SNNormalMember member, String message, boolean block);
 
     /**

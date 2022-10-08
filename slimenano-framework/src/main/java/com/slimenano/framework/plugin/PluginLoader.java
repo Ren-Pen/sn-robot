@@ -1,6 +1,7 @@
 package com.slimenano.framework.plugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slimenano.framework.commons.XMLReader;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.Enhancer;
 import com.slimenano.framework.access.AccessInterceptor;
@@ -116,9 +117,8 @@ public class PluginLoader {
     public PluginInformation getInformation(ClassLoader classLoader) throws IOException {
 
         try {
-            try (InputStream is = classLoader.getResourceAsStream("plugin.json")) {
-                ObjectMapper om = new ObjectMapper();
-                return om.readValue(is, PluginInformation.class);
+            try (InputStream is = classLoader.getResourceAsStream("plugin.xml")) {
+                return XMLReader.EMO2Bean(XMLReader.deepE2M(XMLReader.parse(is).getDocumentElement()), PluginInformation.class);
             }
 
         } catch (Exception e) {

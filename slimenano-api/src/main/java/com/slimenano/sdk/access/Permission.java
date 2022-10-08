@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 
-public enum Access {
+public enum Permission {
 
     ROOT(null, Dangerous.DANGEROUS, "所有权限"),
     TEST(ROOT, Dangerous.TEMP, "测试权限"),
@@ -41,7 +41,7 @@ public enum Access {
     ;
 
     @Getter
-    private final Access father;
+    private final Permission father;
 
     @Getter
     private final Dangerous dangerous;
@@ -49,47 +49,47 @@ public enum Access {
     @Getter
     private final String name;
 
-    Access(Access father, Dangerous dangerous, String name) {
+    Permission(Permission father, Dangerous dangerous, String name) {
         this.father = father;
         this.dangerous = dangerous;
         this.name = name;
     }
 
-    public static Access[] simplify(Access[] accesses) {
+    public static Permission[] simplify(Permission[] permissions) {
 
-        HashSet<Access> set = new HashSet<>(Arrays.asList(accesses));
+        HashSet<Permission> set = new HashSet<>(Arrays.asList(permissions));
 
-        for (Access access : accesses) {
-            if (set.contains(access.father)) set.remove(access);
+        for (Permission permission : permissions) {
+            if (set.contains(permission.father)) set.remove(permission);
         }
 
-        return set.toArray(new Access[0]);
+        return set.toArray(new Permission[0]);
     }
 
-    public static Access[] expends(Access[] accesses) {
+    public static Permission[] expends(Permission[] permissions) {
 
-        HashSet<Access> set = new HashSet<>(Arrays.asList(accesses));
+        HashSet<Permission> set = new HashSet<>(Arrays.asList(permissions));
 
-        for (Access access : accesses) {
-            for (Access value : Access.values()) {
-                if (access.isAccess(value)) {
+        for (Permission permission : permissions) {
+            for (Permission value : Permission.values()) {
+                if (permission.isAccess(value)) {
                     set.add(value);
                 }
             }
         }
 
-        return set.stream().sorted(Comparator.comparingInt(a -> a.dangerous.getVal())).toArray(Access[]::new);
+        return set.stream().sorted(Comparator.comparingInt(a -> a.dangerous.getVal())).toArray(Permission[]::new);
     }
 
-    public static String toString(Access[] accesses) {
+    public static String toString(Permission[] permissions) {
 
-        Access[] expends = expends(accesses);
+        Permission[] expends = expends(permissions);
         StringBuilder builder = new StringBuilder();
-        for (Access access : expends) {
+        for (Permission permission : expends) {
             builder.append("[")
-                    .append(access.getDangerous().getTitle())
+                    .append(permission.getDangerous().getTitle())
                     .append("] ")
-                    .append(access.name).append("\n");
+                    .append(permission.name).append("\n");
         }
 
         return builder.toString();
@@ -99,14 +99,14 @@ public enum Access {
     /**
      * 判断是否拥有权限
      *
-     * @param access
+     * @param permission
      *
      * @return
      */
-    public boolean isAccess(Access access) {
-        while (access != null) {
-            if (access == this) return true;
-            access = access.father;
+    public boolean isAccess(Permission permission) {
+        while (permission != null) {
+            if (permission == this) return true;
+            permission = permission.father;
         }
         return false;
     }

@@ -2,8 +2,7 @@
 <plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.bioelectronic.top/plugin http://www.bioelectronic.top/schema/plugin.xsd
                             http://www.bioelectronic.top/cli http://www.bioelectronic.top/schema/bridge-cli.xsd"
-        xmlns="http://www.bioelectronic.top/plugin"
-        xmlns:cli="http://www.bioelectronic.top/cli">
+        xmlns="http://www.bioelectronic.top/plugin">
     <name>demo plugin</name>
     <path>com.demo.DemoPlugin</path>
     <version>1.0.1</version>
@@ -15,11 +14,13 @@
     </permissions>
 
     <extension>
-        <cli:console prefix="demo">
-            <cli:command bean="classpath:com.demo.DemoPlugin" method="demo" name="demo">
-                <cli:argument simplify="d" name="debug"/>
-                <cli:argument simplify="e" name="exception"/>
-            </cli:command>
-        </cli:console>
+        <console xmlns="http://www.bioelectronic.top/cli" prefix="demo">
+            <command bean="classpath:com.demo.DemoPlugin" method="demo" name="demo">
+                <arguments>
+                    <argument name="demo" simplify="r" description="运行demo" empty="FORCE" required="true"/>
+                    <argument name="debug" simplify="d" description="插件调试指令" empty="FORCE"/>
+                </arguments>
+            </command>
+        </console>
     </extension>
 </plugin>

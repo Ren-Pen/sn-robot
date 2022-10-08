@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import com.slimenano.sdk.access.Access;
+import com.slimenano.sdk.access.Permission;
 
 import java.util.HashMap;
 
@@ -44,7 +44,7 @@ public class PluginInformation {
     /**
      * 插件申请权限
      */
-    private Access[] accesses;
+    private Permission[] permissions;
 
     /**
      * 扩展数据

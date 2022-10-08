@@ -31,11 +31,17 @@
                         <xsd:sequence>
                             <xsd:any minOccurs="0" maxOccurs="unbounded"/>
                         </xsd:sequence>
+                        <xsd:attribute name="version" type="p:extensionVersion" default="EXT1"/>
                     </xsd:complexType>
                 </xsd:element>
             </xsd:all>
         </xsd:complexType>
     </xsd:element>
+    <xsd:simpleType name="extensionVersion" final="restriction">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="EXT1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
     <xsd:simpleType name="permission" final="restriction">
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="ROOT"/>

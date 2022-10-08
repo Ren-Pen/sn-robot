@@ -27,7 +27,11 @@ public class DemoPlugin extends BasePlugin {
     public boolean demo(HashMap<String, String> args){
 
         if (args.containsKey("debug")){
-            log.info("");
+            log.info("调试参数！");
+        }else if (args.containsKey("demo")){
+            log.info("运行了！ROBOT:" + robot.getCoreType());
+        }else{
+            log.info("无参！");
         }
 
         return true;

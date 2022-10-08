@@ -8,7 +8,7 @@ import com.slimenano.framework.event.EventChannelImpl;
 import com.slimenano.framework.event.impl.plugin.PluginLoadFailEvent;
 import com.slimenano.framework.event.impl.plugin.PluginLoadedEvent;
 import com.slimenano.framework.event.impl.plugin.PluginPreLoadEvent;
-import com.slimenano.sdk.access.Access;
+import com.slimenano.sdk.access.Permission;
 import com.slimenano.sdk.framework.BeanContext;
 import com.slimenano.sdk.framework.SystemInstance;
 import com.slimenano.sdk.framework.annotations.Mount;
@@ -69,6 +69,7 @@ public class PluginManager {
         File jarFile = new File(pluginDir + File.separator + jarFileName);
 
         DynamicJarClassLoader classLoader = pluginLoader.open(jarFile);
+        if (classLoader == null) return false;
 
         log.debug("{} 插件类加载器以创建，插件文件已打开。加载器：{}", jarFileName, classLoader);
         PluginInformation information = null;
@@ -95,7 +96,7 @@ public class PluginManager {
                             "插件作者：" + information.getAuthor() + "\n" +
                             "插件版本：" + information.getVersion() + "\n" +
                             "插件详情：" + information.getDescription() + "\n" +
-                            "插件权限：\n" + Access.toString(information.getAccesses()) + "\n" +
+                            "插件权限：\n" + Permission.toString(information.getPermissions()) + "\n" +
                             "插件管理器无法识别插件是否安全，是否加载？"
                     , GUI_CONST.YES_NO)){
                 log.debug("{} 插件加载行为已被取消", information.getPath());

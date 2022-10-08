@@ -1,6 +1,6 @@
 package com.slimenano.sdk.framework.annotations;
 
-import com.slimenano.sdk.access.Access;
+import com.slimenano.sdk.access.Permission;
 
 import java.lang.annotation.*;
 
@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 public @interface AccessControl {
-    Access[] require() default {};
+    Permission[] require() default {};
 }

@@ -1,6 +1,6 @@
 package com.slimenano.sdk.robot.utils.conversation;
 
-import com.slimenano.sdk.access.Access;
+import com.slimenano.sdk.access.Permission;
 import com.slimenano.sdk.core.Robot;
 import com.slimenano.sdk.event.annotations.EventListener;
 import com.slimenano.sdk.event.annotations.GenericEventType;
@@ -8,7 +8,9 @@ import com.slimenano.sdk.event.annotations.OnSuperSubscribe;
 import com.slimenano.sdk.event.annotations.Subscribe;
 import com.slimenano.sdk.framework.InitializationBean;
 import com.slimenano.sdk.framework.annotations.Mount;
+import com.slimenano.sdk.logger.Marker;
 import com.slimenano.sdk.plugin.PluginInformation;
+import com.slimenano.sdk.robot.events.BotLinkStateChangeEvent;
 import com.slimenano.sdk.robot.events.messages.SNGroupMessageEvent;
 import com.slimenano.sdk.robot.events.messages.SNMessageEvent;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
@@ -17,6 +19,7 @@ import com.slimenano.sdk.robot.messages.meta.SNMessageSource;
 import lombok.Getter;
 import lombok.Setter;
 import com.slimenano.sdk.access.AccessManager;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 
@@ -29,6 +32,8 @@ import java.util.ArrayList;
  */
 @EventListener
 @OnSuperSubscribe(superClazz = Conversation.class)
+@Slf4j
+@Marker("选项会话器")
 public abstract class Conversation<T extends SNMessageEvent> implements InitializationBean {
 
     @Mount
@@ -39,7 +44,9 @@ public abstract class Conversation<T extends SNMessageEvent> implements Initiali
 
     @Getter
     @Setter
-    private boolean enable = true;
+    private volatile boolean enable = true;
+
+    private volatile boolean loaded = false;
 
     /**
      * 保存所有的wrapper
@@ -68,17 +75,33 @@ public abstract class Conversation<T extends SNMessageEvent> implements Initiali
 
     }
 
+    @Subscribe
+    public final void onBotStateChange(BotLinkStateChangeEvent event){
+        if (event.getState() == BotLinkStateChangeEvent.ONLINE){
+            if (!loaded) {
+                synchronized (this) {
+                    if (!loaded) {
+                        loaded = true;
+                        try {
+                            onLoading();
+                        } catch (Exception e) {
+                            log.error("会话器加载时出现了错误，会话器功能将部分不可用！", e);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     protected abstract void onLoading() throws Exception;
 
     @Override
     public final void onLoad() throws Exception {
-        if (!accessManager.hasAccess(information, Access.BEHAVIOR_GET_BOT_ID)){
-            if (!accessManager.useAccess(information, Access.BEHAVIOR_GET_BOT_ID)) {
+        if (!accessManager.hasAccess(information, Permission.BEHAVIOR_GET_BOT_ID)){
+            if (!accessManager.useAccess(information, Permission.BEHAVIOR_GET_BOT_ID)) {
                 throw new RuntimeException("没有足够的权限，会话器无法启动！");
             }
         }
-        onLoading();
     }
 
     /**
