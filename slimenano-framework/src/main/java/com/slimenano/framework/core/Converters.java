@@ -114,7 +114,7 @@ public class Converters implements InitializationBean {
             log.debug("{} 无该类型转换器", object.getClass());
         }
         try {
-            Object o = converter.convert(object);
+            Object o = converter.reverse_convert(object);
             if (clazz.isAssignableFrom(o.getClass())) {
                 return (T) o;
             } else {

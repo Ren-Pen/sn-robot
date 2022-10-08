@@ -21,6 +21,12 @@
                     <argument name="debug" simplify="d" description="插件调试指令" empty="FORCE"/>
                 </arguments>
             </command>
+            <command bean="classpath:com.demo.DemoPlugin" method="friend" name="friend" empty="FALSE">
+                <arguments>
+                    <argument name="target" simplify="t" description="目标" empty="FALSE" required="true"/>
+                    <argument name="msg" simplify="m" description="消息" empty="FALSE" required="true"/>
+                </arguments>
+            </command>
         </console>
     </extension>
 </plugin>

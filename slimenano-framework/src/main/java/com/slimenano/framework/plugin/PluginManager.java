@@ -1,5 +1,6 @@
 package com.slimenano.framework.plugin;
 
+import com.slimenano.framework.event.impl.plugin.PluginUnloadedEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.access.AccessManagerImpl;
@@ -117,7 +118,11 @@ public class PluginManager {
             eventChannel.register(context);
 
             pluginMap.put(information.getPath(), meta);
-            bean.loaded();
+            try {
+                bean.loaded();
+            }catch (Exception e){
+                log.error("插件在后加载步骤出现异常，可能会导致插件无法正常运行，请卸载插件后重试！", e);
+            }
             eventChannel.post(new PluginLoadedEvent(meta));
 
 
@@ -162,8 +167,8 @@ public class PluginManager {
         }).unregister(context);
 
         log.debug("{} 插件已卸载", className);
+        eventChannel.post(new PluginUnloadedEvent(meta));
         bridge.alert("插件管理器", "插件 " + meta.getJarFile().getName() + " 已卸载", GUI_CONST.INFO);
-
     }
 
 

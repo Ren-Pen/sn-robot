@@ -72,7 +72,7 @@ public abstract class BaseRobot implements Robot, InitializationBean {
 
     protected abstract void toLogin() throws Exception;
 
-    protected abstract void close() throws Exception;
+    public abstract void close() throws Exception;
 
     public final void login() {
         eventChannel.post(new LoginEvent("准备登录", LoginEvent.INFO));

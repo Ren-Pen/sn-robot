@@ -19,6 +19,8 @@ public interface Robot {
 
     String base_version = "alpha-v1.0.0.021";
 
+    boolean isClose();
+
     /**
      * 测试用方法，没有实际效果
      */

@@ -75,21 +75,25 @@ public abstract class Conversation<T extends SNMessageEvent> implements Initiali
 
     }
 
-    @Subscribe
-    public final void onBotStateChange(BotLinkStateChangeEvent event){
-        if (event.getState() == BotLinkStateChangeEvent.ONLINE){
-            if (!loaded) {
-                synchronized (this) {
-                    if (!loaded) {
-                        loaded = true;
-                        try {
-                            onLoading();
-                        } catch (Exception e) {
-                            log.error("会话器加载时出现了错误，会话器功能将部分不可用！", e);
-                        }
+    private void load(){
+        if (!loaded) {
+            synchronized (this) {
+                if (!loaded) {
+                    loaded = true;
+                    try {
+                        onLoading();
+                    } catch (Exception e) {
+                        log.error("会话器加载时出现了错误，会话器功能将部分不可用！", e);
                     }
                 }
             }
+        }
+    }
+
+    @Subscribe
+    public final void onBotStateChange(BotLinkStateChangeEvent event){
+        if (event.getState() == BotLinkStateChangeEvent.ONLINE){
+            load();
         }
     }
 
@@ -102,6 +106,10 @@ public abstract class Conversation<T extends SNMessageEvent> implements Initiali
                 throw new RuntimeException("没有足够的权限，会话器无法启动！");
             }
         }
+        if (!robot.isClose()){
+            load();
+        }
+
     }
 
     /**

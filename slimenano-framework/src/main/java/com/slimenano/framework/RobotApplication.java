@@ -1,5 +1,6 @@
 package com.slimenano.framework;
 
+import com.slimenano.sdk.framework.annotations.Mount;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.core.BaseRobot;
@@ -59,6 +60,7 @@ public class RobotApplication {
             log.info("已载入的核心：{}\n", robot.getCoreType());
             context.refreshAutowiredBean();
             context.notifyLoad();
+            context.getBean(EventChannelImpl.class).register(context);
             guiThread = new Thread(()->{
                 try {
                     context.getBean(IGUIBridge.class).main(args);

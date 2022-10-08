@@ -1,5 +1,6 @@
 package com.demo;
 
+import com.slimenano.sdk.robot.messages.content.SNText;
 import lombok.extern.slf4j.Slf4j;
 import com.slimenano.sdk.config.ConfigLocation;
 import com.slimenano.sdk.core.Robot;
@@ -34,6 +35,20 @@ public class DemoPlugin extends BasePlugin {
             log.info("无参！");
         }
 
+        return true;
+    }
+
+    public boolean friend(HashMap<String, String> args){
+        long target = 0L;
+        String msg = args.get("msg");
+        try{
+            target = Long.parseLong(args.get("target"));
+        }catch (Exception e){
+            log.error("错误的输入！", e);
+            return false;
+        }
+
+        robot.getFriend(target).sendMessage(robot, new SNText(msg).toChain());
         return true;
     }
 
