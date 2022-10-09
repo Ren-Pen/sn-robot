@@ -1,8 +1,5 @@
 package com.slimenano.framework;
 
-import com.slimenano.sdk.framework.annotations.Mount;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.core.BaseRobot;
 import com.slimenano.framework.event.EventChannelImpl;
 import com.slimenano.sdk.config.ConfigLocation;
@@ -14,6 +11,8 @@ import com.slimenano.sdk.framework.exception.GetBeanException;
 import com.slimenano.sdk.framework.ui.IGUIBridge;
 import com.slimenano.sdk.logger.Marker;
 import com.slimenano.sdk.plugin.BasePlugin;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
@@ -30,14 +29,30 @@ public class RobotApplication {
 
     private static final Thread cleanup = new Thread(() -> {
         try {
-            if (guiThread != null){
+            if (guiThread != null) {
                 guiThread.interrupt();
             }
-            context.getBean(EventChannelImpl.class).addUnregisterActionListener(context, () -> context.close()).unregister(context);
             log.info("等待上下文关闭...");
+
+            EventChannelImpl bean = context.getBean(EventChannelImpl.class);
+            if (bean.getThread().isAlive()) {
+                bean.addUnregisterActionListener(context, () -> context.close()).unregister(context);
+            } else {
+                context.close();
+            }
+
             while (context.getStatus() != Context.DESTROYED) ;
         } catch (GetBeanException e) {
             e.printStackTrace();
+        } finally {
+            log.info("上下文清理完成，程序即将退出...");
+            new Thread(()->{
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }, "cleanup");
 
@@ -61,7 +76,7 @@ public class RobotApplication {
             context.refreshAutowiredBean();
             context.notifyLoad();
             context.getBean(EventChannelImpl.class).register(context);
-            guiThread = new Thread(()->{
+            guiThread = new Thread(() -> {
                 try {
                     context.getBean(IGUIBridge.class).main(args);
                 } catch (Exception e) {
@@ -82,7 +97,8 @@ public class RobotApplication {
 
     @SneakyThrows
     public synchronized static void stop() {
-        System.exit(0);
+        Runtime.getRuntime().removeShutdownHook(cleanup);
+        cleanup.run();
     }
 
 

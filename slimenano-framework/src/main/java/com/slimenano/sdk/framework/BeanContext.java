@@ -1,5 +1,6 @@
 package com.slimenano.sdk.framework;
 
+import com.slimenano.framework.RobotApplication;
 import com.slimenano.sdk.config.ConfigFields;
 import com.slimenano.sdk.framework.annotations.*;
 import com.slimenano.sdk.framework.exception.BeanException;
@@ -127,47 +128,49 @@ public class BeanContext implements Context {
     public static void removeContext(BeanContext context) {
         log.debug("{} 准备卸载对象上下文", context.contextClass);
 
-        for (Object o : context.getBeans()) {
+        List<Object> beans = context.getBeans();
+        for (Object o : beans) {
             if (context.isBelongThisContext(o.getClass())) {
+                if (context.contextClass != RobotApplication.class) {
+                    for (Field f : ClassUtils.getAllField(o.getClass())) {
+                        f.setAccessible(true);
+                        Class<?> type = f.getType();
+                        if (Thread.class.isAssignableFrom(type)) {
+                            try {
+                                Thread thd = (Thread) f.get(o);
+                                if (thd.isAlive()) {
+                                    log.warn("{}.{}<{}> 发现未停止的线程，正在尝试停止", o.getClass(), f, thd.getName());
+                                    thd.interrupt();
+                                }
+                            } catch (IllegalAccessException ignore) {
 
-                for (Field f : o.getClass().getFields()) {
-                    f.setAccessible(true);
-                    Class<?> type = f.getType();
-                    if (Thread.class.isAssignableFrom(type)) {
+                            }
+                        } else if (ThreadPoolExecutor.class.isAssignableFrom(type)) {
+
+                            try {
+                                ThreadPoolExecutor thd = (ThreadPoolExecutor) f.get(o);
+                                if (!thd.isTerminated()) {
+                                    log.warn("{}.{}<{}> 发现未停止的线程池子，正在尝试停止", o.getClass(), f, type);
+                                    thd.shutdownNow();
+                                }
+                            } catch (IllegalAccessException ignore) {
+
+                            }
+
+                        }
                         try {
-                            Thread thd = (Thread) f.get(o);
-                            if (thd.isAlive()) {
-                                log.warn("{}.{}<{}> 发现未停止的线程，正在尝试停止", o.getClass(), f, thd.getName());
-                                thd.interrupt();
+                            int modifiers = type.getModifiers();
+                            if (!type.isPrimitive() && !Modifier.isFinal(modifiers))
+                                f.set(o, null);
+                            if (!type.isPrimitive() && !String.class.isAssignableFrom(type) && Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers)) {
+                                log.warn("{}.{}<{}> 发现静态常量，可能会导致内存泄漏", o.getClass(), f, type);
                             }
                         } catch (IllegalAccessException ignore) {
 
                         }
-                    } else if (ThreadPoolExecutor.class.isAssignableFrom(type)) {
-
-                        try {
-                            ThreadPoolExecutor thd = (ThreadPoolExecutor) f.get(o);
-                            if (!thd.isTerminated()) {
-                                log.warn("{}.{}<{}> 发现未停止的线程池子，正在尝试停止", o.getClass(), f, type);
-                                thd.shutdownNow();
-                            }
-                        } catch (IllegalAccessException ignore) {
-
-                        }
-
                     }
-                    try {
-                        int modifiers = type.getModifiers();
-                        if (!type.isPrimitive() && !Modifier.isFinal(modifiers))
-                            f.set(o, null);
-                        if (!type.isPrimitive() && !String.class.isAssignableFrom(type) && Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers)) {
-                            log.warn("{}.{}<{}> 发现静态常量，可能会导致内存泄漏", o.getClass(), f, type);
-                        }
-                    } catch (IllegalAccessException ignore) {
 
-                    }
                 }
-
                 if (o instanceof InitializationBean) {
                     try {
                         ((InitializationBean) o).onDestroy();

@@ -6,6 +6,7 @@ import com.slimenano.sdk.event.annotations.EventListener;
 import com.slimenano.sdk.framework.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.commons.ClassUtils;
 import com.slimenano.sdk.event.EventChannel;
@@ -36,9 +37,10 @@ public class EventChannelImpl implements InitializationBean, Runnable, EventChan
     private static final int D_REG = 1;
     private static final Object lock = new Object();
 
-    // 是否事件总线是否停止
+    // 事件总线是否停止
     private volatile static boolean stop = false;
     // 事件总线自身线程
+    @Getter
     private final Thread thread = new Thread(this, "EventChannel");
     private final HashSet<BeanContext> registerContextSet = new HashSet<>();
     // Context-Listener-Map
@@ -427,6 +429,7 @@ public class EventChannelImpl implements InitializationBean, Runnable, EventChan
     @Override
     public void onLoad() {
         // 初始化线程池
+        thread.setDaemon(false);
         thread.start();
     }
 
@@ -477,7 +480,7 @@ public class EventChannelImpl implements InitializationBean, Runnable, EventChan
             }
 
         }
-
+        log.warn("事件总线已停止！(若在应用程序终止阶段收到该警告，请忽略)");
     }
 
     @Data
