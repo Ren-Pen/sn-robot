@@ -131,6 +131,13 @@ public class BeanContext implements Context {
         List<Object> beans = context.getBeans();
         for (Object o : beans) {
             if (context.isBelongThisContext(o.getClass())) {
+                if (o instanceof InitializationBean) {
+                    try {
+                        ((InitializationBean) o).onDestroy();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 if (context.contextClass != RobotApplication.class) {
                     for (Field f : ClassUtils.getAllField(o.getClass())) {
                         f.setAccessible(true);
@@ -168,14 +175,6 @@ public class BeanContext implements Context {
                         } catch (IllegalAccessException ignore) {
 
                         }
-                    }
-
-                }
-                if (o instanceof InitializationBean) {
-                    try {
-                        ((InitializationBean) o).onDestroy();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                 }
                 belongMap.remove(o.getClass());

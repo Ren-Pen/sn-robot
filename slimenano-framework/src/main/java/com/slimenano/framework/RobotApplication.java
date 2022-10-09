@@ -13,6 +13,7 @@ import com.slimenano.sdk.logger.Marker;
 import com.slimenano.sdk.plugin.BasePlugin;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 
@@ -26,8 +27,10 @@ public class RobotApplication {
     private static BeanContext context;
 
     private static Thread guiThread = null;
+    private static volatile boolean stopping = false;
 
     private static final Thread cleanup = new Thread(() -> {
+        stopping = true;
         try {
             if (guiThread != null) {
                 guiThread.interrupt();
@@ -46,13 +49,7 @@ public class RobotApplication {
             e.printStackTrace();
         } finally {
             log.info("上下文清理完成，程序即将退出...");
-            new Thread(()->{
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            LogManager.shutdown();
         }
     }, "cleanup");
 
@@ -97,8 +94,10 @@ public class RobotApplication {
 
     @SneakyThrows
     public synchronized static void stop() {
-        Runtime.getRuntime().removeShutdownHook(cleanup);
-        cleanup.run();
+        if (!stopping) {
+            stopping = true;
+            System.exit(0);
+        }
     }
 
 
