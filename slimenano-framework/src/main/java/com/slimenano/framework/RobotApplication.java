@@ -35,6 +35,7 @@ public class RobotApplication {
         new File("data").mkdirs();
         new File("plugins").mkdirs();
         new File("logs").mkdirs();
+        new File("validation").mkdirs();
     }
 
     private static final Thread cleanup = new Thread(() -> {
