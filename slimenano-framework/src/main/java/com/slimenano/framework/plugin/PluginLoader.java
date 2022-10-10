@@ -119,10 +119,10 @@ public class PluginLoader {
             try (InputStream is = classLoader.getResourceAsStream("plugin.xml")) {
                 long time = System.currentTimeMillis();
                 Object emo = XMLReader.deepE2M(XMLReader.parse(is).getDocumentElement());
-                log.warn("{} XML文档读取耗时：{}ms", classLoader , System.currentTimeMillis() - time);
+                log.debug("{} XML文档读取耗时：{}ms", classLoader , System.currentTimeMillis() - time);
                 time = System.currentTimeMillis();
                 PluginInformation information = XMLReader.EMO2Bean(emo, PluginInformation.class);
-                log.warn("{} XML对象转换耗时：{}ms", classLoader , System.currentTimeMillis() - time);
+                log.debug("{} XML对象转换耗时：{}ms", classLoader , System.currentTimeMillis() - time);
                 return information;
             }
 
