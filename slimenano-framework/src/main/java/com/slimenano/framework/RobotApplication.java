@@ -29,6 +29,14 @@ public class RobotApplication {
     private static Thread guiThread = null;
     private static volatile boolean stopping = false;
 
+    static {
+        new File("tmp").mkdirs();
+        new File("cache").mkdirs();
+        new File("data").mkdirs();
+        new File("plugins").mkdirs();
+        new File("logs").mkdirs();
+    }
+
     private static final Thread cleanup = new Thread(() -> {
         stopping = true;
         try {

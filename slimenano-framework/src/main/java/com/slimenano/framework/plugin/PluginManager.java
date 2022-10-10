@@ -5,7 +5,6 @@ import com.slimenano.framework.event.impl.plugin.PluginUnloadedEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.access.AccessManagerImpl;
-import com.slimenano.framework.config.RobotConfiguration;
 import com.slimenano.framework.event.EventChannelImpl;
 import com.slimenano.framework.event.impl.plugin.PluginLoadFailEvent;
 import com.slimenano.framework.event.impl.plugin.PluginLoadedEvent;
@@ -40,9 +39,6 @@ public class PluginManager {
 
     @Mount
     private PluginLoader pluginLoader;
-
-    @Mount("config:robot")
-    private RobotConfiguration configuration;
 
     @Mount("config:plugin")
     private PluginConfiguration pluginConfiguration;

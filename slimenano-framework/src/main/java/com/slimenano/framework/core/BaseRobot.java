@@ -1,7 +1,5 @@
 package com.slimenano.framework.core;
 
-import lombok.extern.slf4j.Slf4j;
-import com.slimenano.framework.config.RobotConfiguration;
 import com.slimenano.framework.event.EventChannelImpl;
 import com.slimenano.framework.event.impl.bot.LoginEvent;
 import com.slimenano.sdk.core.Robot;
@@ -11,21 +9,18 @@ import com.slimenano.sdk.framework.SystemInstance;
 import com.slimenano.sdk.framework.annotations.Mount;
 import com.slimenano.sdk.framework.ui.IGUIBridge;
 import com.slimenano.sdk.logger.Marker;
+import com.slimenano.sdk.robot.exception.InternalModelFailedException;
+import com.slimenano.sdk.robot.exception.LoginFailedException;
+import com.slimenano.sdk.robot.exception.ServerFailedException;
+import com.slimenano.sdk.robot.exception.WrongPasswordException;
 import com.slimenano.sdk.robot.messages.SNContentMessage;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import lombok.extern.slf4j.Slf4j;
 
 @SystemInstance
 @Slf4j
 @Marker("ROBOT")
 public abstract class BaseRobot implements Robot, InitializationBean {
-
-    @Mount
-    protected RobotConfiguration robotConfiguration;
 
     @Mount
     protected EventChannelImpl eventChannel;
@@ -39,63 +34,55 @@ public abstract class BaseRobot implements Robot, InitializationBean {
     @Mount
     protected IGUIBridge bridge;
 
-    protected final boolean netCheck() {
-        boolean connect = false;
-        Runtime runtime = Runtime.getRuntime();
-        Process process;
-        try {
-            process = runtime.exec("ping " + "www.baidu.com");
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            is.close();
-            isr.close();
-            br.close();
-
-            if (!sb.toString().equals("")) {
-                connect = sb.toString().indexOf("TTL") > 0;
-            }
-        } catch (IOException ignored) {
-
-        }
-        return connect;
-    }
-
     protected abstract boolean getStatus();
 
-    protected abstract void initInstance();
 
-    protected abstract void toLogin() throws Exception;
+    protected abstract void toLogin(long id, String password, String protocal) throws LoginFailedException;
 
     public abstract void close() throws Exception;
 
-    public final void login() {
-        eventChannel.post(new LoginEvent("准备登录", LoginEvent.INFO));
-        if (!netCheck()) {
-            log.error("网络未连接，请检查网络设置！");
-            eventChannel.post(new LoginEvent("网络未连接，请检查网络设置", LoginEvent.ERROR));
+    public final void login(long id, String password, String protocal) {
+        if (id == 0L) {
+            log.warn("没有设置登录账号！");
             return;
         }
+        if (password == null || password.isEmpty()) {
+            password = bridge.prompt("SECURE", "请输入密码", "");
+            if ("".equals(password)) {
+                log.warn("没有输入密码！");
+                return;
+            }
+        }
+        log.info("准备登录");
+        eventChannel.post(new LoginEvent("准备登录", LoginEvent.INFO));
         if (getStatus()) {
             log.error("重复的登录！");
             eventChannel.post(new LoginEvent("重复的登录", LoginEvent.ERROR));
             return;
         }
-        eventChannel.post(new LoginEvent("初始化实例中...", LoginEvent.INFO));
-        initInstance();
-
-        eventChannel.post(new LoginEvent("登录中...（请注意弹窗）", LoginEvent.INFO));
+        log.info("登录中...");
+        eventChannel.post(new LoginEvent("登录中...", LoginEvent.INFO));
         try {
-            toLogin();
+            toLogin(id, password, protocal);
             log.debug("登录成功");
             eventChannel.post(new LoginEvent("登录成功", LoginEvent.SUCCESS));
-        } catch (Throwable t) {
-            log.error("登录失败", t);
+        } catch (LoginFailedException t) {
+            log.debug("登录失败", t);
+            if (t instanceof WrongPasswordException){
+                log.error("登录失败！账号或者密码错误\n{}", t.getMessage());
+            }else if(t instanceof ServerFailedException){
+                log.error("登录失败！服务器异常，请检查日志后重试！\n{}", t.getMessage());
+            }else if(t instanceof InternalModelFailedException){
+                log.error("登录失败！内部异常，请检查日志后重试！\n{}", t.getMessage());
+            }else {
+                log.error("登录失败！意料之外的异常，请检查日志后重试！");
+            }
+
+            try {
+                close();
+            } catch (Exception e) {
+                log.debug("关闭机器人出现异常", e);
+            }
             eventChannel.post(new LoginEvent("登录失败，请检查日志", LoginEvent.ERROR, t));
 
         }
