@@ -1,6 +1,7 @@
 package com.slimenano.sdk.framework;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -184,6 +185,7 @@ public class BeanContext implements Context {
 
         // 清除掉 jackson 的缓存，因为会导致插件类卸载不全
         TypeFactory.defaultInstance().clearCache();
+        om = new ObjectMapper();
         context.beanNameMap.clear();
         contextMap.remove(context.contextClass);
         log.debug("{} 对象上下文已卸载，已通知GC", context.contextClass);

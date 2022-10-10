@@ -4,6 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtils {
 
-    public static final ObjectMapper om = new ObjectMapper();
+    public static ObjectMapper om = new ObjectMapper();
 
 }
