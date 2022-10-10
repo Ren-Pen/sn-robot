@@ -1,26 +1,25 @@
 package com.slimenano.sdk.framework;
 
-import com.slimenano.framework.RobotApplication;
-import com.slimenano.sdk.config.ConfigFields;
-import com.slimenano.sdk.framework.annotations.*;
-import com.slimenano.sdk.framework.exception.BeanException;
-import com.slimenano.sdk.framework.exception.GetBeanException;
-import com.slimenano.sdk.logger.Marker;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import com.slimenano.framework.RobotApplication;
 import com.slimenano.framework.commons.ClassUtils;
 import com.slimenano.framework.commons.PackageScanner;
+import com.slimenano.sdk.config.ConfigFields;
 import com.slimenano.sdk.config.ConfigLocation;
 import com.slimenano.sdk.config.Configuration;
 import com.slimenano.sdk.config.DefaultConfiguration;
 import com.slimenano.sdk.framework.annotations.Collections;
+import com.slimenano.sdk.framework.annotations.*;
+import com.slimenano.sdk.framework.exception.BeanException;
 import com.slimenano.sdk.framework.exception.BeanInitializationException;
 import com.slimenano.sdk.framework.exception.BeanRepeatNameException;
+import com.slimenano.sdk.framework.exception.GetBeanException;
+import com.slimenano.sdk.logger.Marker;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.io.File;
@@ -30,6 +29,8 @@ import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.slimenano.framework.commons.JSONUtils.om;
 
 /**
  * Bean管理器
@@ -58,7 +59,7 @@ public class BeanContext implements Context {
     private volatile int status = CREATED;
     private ClassLoader beanClassLoader = this.getClass().getClassLoader();
 
-    private JsonNode configuration;
+    private HashMap<String, Object> configuration;
 
     private BeanContext(Class<?> createClass) throws IOException {
         log.debug("{} 准备构造对象上下文.", createClass.getName());
@@ -71,7 +72,7 @@ public class BeanContext implements Context {
         }
 
         ConfigLocation configLocation = createClass.getAnnotation(ConfigLocation.class);
-        ObjectMapper om = new ObjectMapper();
+
         if (configLocation != null) {
             String d = dataDirectory + createClass.getName() + "/";
             if (ClassUtils.hasOrgAnnotation(createClass, ISystem.class)) {
@@ -86,7 +87,7 @@ public class BeanContext implements Context {
                 om.writerWithDefaultPrettyPrinter().writeValue(file, "{}");
             }
             configFile = file;
-            configuration = om.readValue(file, JsonNode.class);
+            configuration = om.readValue(file, HashMap.class);
             log.debug("{} 加载上下文配置文件: {}, 大小:{}字节", createClass.getName(), file.getName(), file.length());
         } else {
             configFile = null;
@@ -216,13 +217,17 @@ public class BeanContext implements Context {
 
     private void scanAndInitializeBean() throws Exception {
         Set<Class<?>> set = new LinkedHashSet<>();
+        long time = System.currentTimeMillis();
         createScanner(set).scanPackage(scanPackage, beanClassLoader);
+        log.debug("{} 包扫描耗时：{}ms", contextClass, System.currentTimeMillis() - time);
         this.status = SCANNED;
         ClassLoader appClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(beanClassLoader);
+            time = System.currentTimeMillis();
             initializeBean(set);
-        }finally {
+            log.debug("{} 初始化耗时：{}ms", contextClass, System.currentTimeMillis() - time);
+        } finally {
             Thread.currentThread().setContextClassLoader(appClassLoader);
         }
         this.status = INITIALIZED;
@@ -261,7 +266,7 @@ public class BeanContext implements Context {
                 if (configuration != null && config != null) {
                     ConfigFields configFields = clazz.getAnnotation(ConfigFields.class);
                     log.debug("{} 构建并初始化配置对象: {}", this.contextClass, clazz);
-                    if (!configuration.has(config.prefix())) {
+                    if (!configuration.containsKey(config.prefix())) {
                         if (DefaultConfiguration.class.isAssignableFrom(clazz)) {
                             log.warn("配置项 | 配置 {} 丢失, 即将构建默认配置", config.prefix());
                             o = clazz.newInstance();
@@ -269,14 +274,13 @@ public class BeanContext implements Context {
                             throw new BeanInitializationException(String.format("初始化被管理对象失败! 配置 %s 不存在", config.prefix()));
                         }
                     } else {
-                        ObjectMapper om = new ObjectMapper();
                         if (configFields != null) {
                             List<Object> list = new ArrayList<>(configFields.fieldName().length);
                             for (int i = 0; i < configFields.fieldName().length; i++) {
                                 try {
                                     String s = configFields.fieldName()[i];
                                     Class<?> cf = configFields.fieldType()[i];
-                                    list.add(om.convertValue(configuration.get(config.prefix()).get(s), cf));
+                                    list.add(om.convertValue(((HashMap) configuration.get(config.prefix())).get(s), cf));
                                 } catch (Exception e) {
                                     throw new BeanInitializationException(String.format("初始化被管理对象失败！设置了配置字段但字段数据错误！配置：%s", config.prefix()), e);
                                 }
@@ -430,7 +434,7 @@ public class BeanContext implements Context {
                         if (Collection.class.isAssignableFrom(fieldType)) {
                             if (!Modifier.isAbstract(modifiers) && !Modifier.isInterface(modifiers)) {
                                 field.set(o, fieldType.getConstructor(Collection.class).newInstance(beans));
-                            }else{
+                            } else {
                                 if (List.class.isAssignableFrom(fieldType)) {
                                     field.set(o, beans);
                                 } else if (Set.class.isAssignableFrom(fieldType)) {
@@ -470,7 +474,7 @@ public class BeanContext implements Context {
                 }
             }
         } finally {
-           Thread.currentThread().setContextClassLoader(appClassLoader);
+            Thread.currentThread().setContextClassLoader(appClassLoader);
         }
 
         this.status = LOADED;
@@ -484,15 +488,14 @@ public class BeanContext implements Context {
     @Override
     public void storeConfiguration() throws IOException {
         if (configuration == null) return;
-        ObjectNode root = JsonNodeFactory.instance.objectNode();
-        ObjectMapper om = new ObjectMapper();
+        HashMap<String, Object> root = new HashMap<>();
         for (Object bean : this.getBeans()) {
             Class<?> clazz = bean.getClass();
             Configuration configuration = clazz.getAnnotation(Configuration.class);
             if (configuration != null) {
                 ConfigFields fields = clazz.getAnnotation(ConfigFields.class);
                 if (fields == null) {
-                    root.put(configuration.prefix(), om.convertValue(bean, JsonNode.class));
+                    root.put(configuration.prefix(), bean);
                 } else {
                     HashMap map = new HashMap();
                     try {
@@ -504,7 +507,7 @@ public class BeanContext implements Context {
                     } catch (Exception e) {
                         throw new IOException(e);
                     }
-                    root.put(configuration.prefix(), om.convertValue(map, JsonNode.class));
+                    root.put(configuration.prefix(), bean);
 
                 }
 
@@ -512,7 +515,6 @@ public class BeanContext implements Context {
         }
 
         om.writerWithDefaultPrettyPrinter().writeValue(configFile, root);
-        this.configuration = root;
 
     }
 

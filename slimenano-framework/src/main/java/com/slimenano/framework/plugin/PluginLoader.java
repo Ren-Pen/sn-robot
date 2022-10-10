@@ -1,6 +1,5 @@
 package com.slimenano.framework.plugin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slimenano.framework.commons.XMLReader;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.Enhancer;
@@ -118,7 +117,13 @@ public class PluginLoader {
 
         try {
             try (InputStream is = classLoader.getResourceAsStream("plugin.xml")) {
-                return XMLReader.EMO2Bean(XMLReader.deepE2M(XMLReader.parse(is).getDocumentElement()), PluginInformation.class);
+                long time = System.currentTimeMillis();
+                Object emo = XMLReader.deepE2M(XMLReader.parse(is).getDocumentElement());
+                log.warn("{} XML文档读取耗时：{}ms", classLoader , System.currentTimeMillis() - time);
+                time = System.currentTimeMillis();
+                PluginInformation information = XMLReader.EMO2Bean(emo, PluginInformation.class);
+                log.warn("{} XML对象转换耗时：{}ms", classLoader , System.currentTimeMillis() - time);
+                return information;
             }
 
         } catch (Exception e) {
