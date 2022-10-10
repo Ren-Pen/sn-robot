@@ -40,4 +40,9 @@ public class PluginMeta {
      */
     private PluginInformation information;
 
+    /**
+     * 插件文件sha1值
+     */
+    private String sha1;
+
 }
