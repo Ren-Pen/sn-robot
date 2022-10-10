@@ -195,9 +195,7 @@ public class BeanContext implements Context {
     }
 
     public boolean isBelongThisContext(Class<?> clazz) {
-        boolean contains = this.contextClass.equals(belongMap.get(clazz));
-        log.trace("{} 归属判断 {} {}属于当前上下文", this.contextClass, clazz, !contains ? "不" : "");
-        return contains;
+        return this.contextClass.equals(belongMap.get(clazz));
     }
 
     @Override
