@@ -23,11 +23,6 @@ public class MyConfiguration implements DefaultConfiguration {
     private SNMemberPermission maxPermission = SNMemberPermission.OWNER;
     private SNMemberPermission minPermission = SNMemberPermission.MEMBER;
 
-    @Override
-    public DefaultConfiguration createDefaultConfigurationObject() {
-        return new MyConfiguration();
-    }
-
     public void setMaxPermission(String maxPermission) {
         try {
             this.minPermission = SNMemberPermission.valueOf(maxPermission);
