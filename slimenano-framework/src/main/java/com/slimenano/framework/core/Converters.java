@@ -91,6 +91,7 @@ public class Converters implements InitializationBean {
         Converter converter = findAndCached(forwardMap, object.getClass());
         if (converter == null) {
             log.debug("{} 无该类型转换器", object.getClass());
+            return null;
         }
         try {
             Object o = converter.convert(object);
@@ -112,6 +113,7 @@ public class Converters implements InitializationBean {
         Converter converter = findAndCached(reverseMap, object.getClass());
         if (converter == null) {
             log.debug("{} 无该类型转换器", object.getClass());
+            return null;
         }
         try {
             Object o = converter.reverse_convert(object);

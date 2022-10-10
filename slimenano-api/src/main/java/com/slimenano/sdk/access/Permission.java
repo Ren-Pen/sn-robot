@@ -81,15 +81,12 @@ public enum Permission {
         return set.stream().sorted(Comparator.comparingInt(a -> a.dangerous.getVal())).toArray(Permission[]::new);
     }
 
-    public static String toString(Permission[] permissions) {
+    public static String toString(String format, Permission[] permissions) {
 
         Permission[] expends = expends(permissions);
         StringBuilder builder = new StringBuilder();
         for (Permission permission : expends) {
-            builder.append("[")
-                    .append(permission.getDangerous().getTitle())
-                    .append("] ")
-                    .append(permission.name).append("\n");
+            builder.append(String.format(format, permission.getDangerous().getTitle(), permission.name));
         }
 
         return builder.toString();

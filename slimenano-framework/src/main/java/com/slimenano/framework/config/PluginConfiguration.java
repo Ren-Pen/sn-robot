@@ -24,25 +24,18 @@ public class PluginConfiguration extends BaseConfiguration implements DefaultCon
 
     // 是否在启动时自动加载插件
     private boolean autoLoad = false;
+    private boolean simplyJarFile = true;
 
-    // 已加载的插件信息
-    private HashMap<String , PL> plugins = new HashMap<>();
+    private HashMap<String, PL> trust = new HashMap<>();
 
-    @Override
-    public DefaultConfiguration createDefaultConfigurationObject() {
-        return new PluginConfiguration();
-    }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PL{
-        // 插件md5
-        private String md5;
-        // 插件jar文件名
-        private String file;
-        // 插件是否启用（底层还是动态装载和动态卸载）
-        private boolean enable;
+        private String filename;
+        private String path;
+        private String hash;
     }
 
 }

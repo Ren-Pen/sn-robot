@@ -266,7 +266,7 @@ public class BeanContext implements Context {
                     if (!configuration.has(config.prefix())) {
                         if (DefaultConfiguration.class.isAssignableFrom(clazz)) {
                             log.warn("配置项 | 配置 {} 丢失, 即将构建默认配置", config.prefix());
-                            o = ((DefaultConfiguration) clazz.newInstance()).createDefaultConfigurationObject();
+                            o = clazz.newInstance();
                         } else {
                             throw new BeanInitializationException(String.format("初始化被管理对象失败! 配置 %s 不存在", config.prefix()));
                         }

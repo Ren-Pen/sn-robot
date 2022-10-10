@@ -38,7 +38,7 @@ public class AccessInterceptor implements MethodInterceptor {
                 log.debug("{} 放行插件执行方法：{}", information.getPath(), method.getName());
                 return method.invoke(robot, objects);
             }else{
-                log.warn("{} 插件行为未授权：{} 需要权限：{}", information.getPath(), method.getName(), Permission.toString(accessControl.require()));
+                log.warn("{} 插件行为未授权：{} 需要权限：{}", information.getPath(), method.getName(), Permission.toString("[%s] %s%n", accessControl.require()));
                 return null;
             }
         }

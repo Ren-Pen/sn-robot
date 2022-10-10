@@ -25,14 +25,9 @@ import com.slimenano.sdk.framework.SystemInstance;
 @Configuration(prefix = "robot")
 public class RobotConfiguration extends BaseConfiguration implements DefaultConfiguration {
 
-    private long account;
-    private String password;
-    private String protocol;
-    private boolean simplyJarFile;
-    private boolean rememberPassword;
+    private long account = 0L;
+    private String password = "";
+    private String protocol = "MACOS";
+    private boolean rememberPassword = false;
 
-    @Override
-    public DefaultConfiguration createDefaultConfigurationObject() {
-        return new RobotConfiguration(0L, "", "MACOS", true, false);
-    }
 }

@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @SystemInstance
 @EventListener
-@CacheIndex(version = 1)
 public class AccessManagerImpl implements AccessManager {
 
     /**
@@ -60,7 +59,7 @@ public class AccessManagerImpl implements AccessManager {
         if (bridge.confirm("动态权限申请",
                 "插件：" + information.getName() + "\n" +
                         "类路径：" + information.getPath() + "\n" +
-                        "正在尝试申请以下权限：" + Permission.toString(new Permission[]{permission}), GUI_CONST.YES_NO)) {
+                        "正在尝试申请以下权限：" + Permission.toString("[%s] %s%n", new Permission[]{permission}), GUI_CONST.YES_NO)) {
             set.add(permission);
             accessMap.replace(information, new HashSet<>(Arrays.asList(Permission.simplify(set.toArray(new Permission[0])))));
             return true;
