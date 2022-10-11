@@ -1,5 +1,6 @@
 package com.slimenano.sdk.plugin;
 
+import com.slimenano.sdk.access.AccessManager;
 import com.slimenano.sdk.core.Robot;
 import com.slimenano.sdk.framework.InitializationBean;
 import com.slimenano.sdk.framework.annotations.Mount;
@@ -36,6 +37,10 @@ public abstract class BasePlugin implements InitializationBean {
     @Mount("iGUIBridge")
     @Getter
     private IGUIBridge bridge;
+
+    @Mount("accessManager")
+    @Getter
+    private AccessManager accessManager;
 
     public void loaded() {}
 
