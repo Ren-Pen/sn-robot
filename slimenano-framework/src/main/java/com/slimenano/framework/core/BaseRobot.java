@@ -3,6 +3,7 @@ package com.slimenano.framework.core;
 import com.slimenano.sdk.robot.contact.SNContact;
 import com.slimenano.sdk.robot.contact.SNGroup;
 import com.slimenano.sdk.robot.contact.user.*;
+import com.slimenano.sdk.robot.exception.permission.BotNoPermissionException;
 import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
@@ -123,26 +124,26 @@ public abstract class BaseRobot extends AbstractRobot {
     }
 
     @Override
-    public boolean recall(SNMessageSource source)
-            throws UnsupportedRobotOperationException, NoOperationPermissionException {
+    public void recall(SNMessageSource source)
+            throws UnsupportedRobotOperationException, NoOperationPermissionException, BotNoPermissionException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 
     @Override
-    public boolean mute(SNMember member, int durationSeconds)
-            throws UnsupportedRobotOperationException, NoOperationPermissionException {
+    public void mute(SNMember member, int durationSeconds)
+            throws UnsupportedRobotOperationException, NoOperationPermissionException, BotNoPermissionException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 
     @Override
-    public boolean unmute(SNNormalMember member)
-            throws UnsupportedRobotOperationException, NoOperationPermissionException {
+    public void unmute(SNNormalMember member)
+            throws UnsupportedRobotOperationException, NoOperationPermissionException, BotNoPermissionException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 
     @Override
-    public boolean kick(SNNormalMember member, String message, boolean block)
-            throws UnsupportedRobotOperationException, NoOperationPermissionException {
+    public void kick(SNNormalMember member, String message, boolean block)
+            throws UnsupportedRobotOperationException, NoOperationPermissionException, BotNoPermissionException{
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 }

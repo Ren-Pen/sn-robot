@@ -10,4 +10,5 @@ import java.lang.annotation.*;
 @Inherited
 public @interface AccessControl {
     Permission[] require() default {};
+    boolean status() default false;
 }

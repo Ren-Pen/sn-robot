@@ -1,7 +1,9 @@
 package com.slimenano.framework.access;
 
 import com.slimenano.framework.commons.ClassUtils;
+import com.slimenano.framework.core.AbstractRobot;
 import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
+import com.slimenano.sdk.robot.exception.unsupported.UnsupportedStatusException;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -36,6 +38,10 @@ public class AccessInterceptor implements MethodInterceptor {
         if (accessControl == null){
             return method.invoke(robot, objects);
         }else{
+            if (accessControl.status() && !robot.getStatus()){
+                log.debug("{} 非法的状态执行：{}", information.getPath(), method.getName());
+                throw new UnsupportedStatusException();
+            }
             if (manager.canAccess(information, accessControl.require())) {
                 log.debug("{} 放行插件执行方法：{}", information.getPath(), method.getName());
                 return method.invoke(robot, objects);

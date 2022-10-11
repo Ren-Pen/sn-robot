@@ -34,9 +34,6 @@ public abstract class AbstractRobot implements Robot, InitializationBean {
     @Mount
     protected IGUIBridge bridge;
 
-    protected abstract boolean getStatus();
-
-
     protected abstract void toLogin(long id, String password, String protocal) throws LoginFailedException;
 
     public abstract void close() throws Exception;

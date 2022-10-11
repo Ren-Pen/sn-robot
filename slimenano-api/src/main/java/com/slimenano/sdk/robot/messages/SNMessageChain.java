@@ -1,5 +1,8 @@
 package com.slimenano.sdk.robot.messages;
 
+import com.slimenano.sdk.robot.exception.file.OverFileSizeMaxException;
+import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
+import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
 import lombok.NoArgsConstructor;
 import com.slimenano.sdk.core.Robot;
 import com.slimenano.sdk.robot.messages.content.*;
@@ -89,12 +92,14 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     }
 
     @Override
-    public SNMessageChain image(Robot robot, File file) throws IOException {
+    public SNMessageChain image(Robot robot, File file)
+            throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
         return plus(robot.uploadImg(file));
     }
 
     @Override
-    public SNMessageChain image(Robot robot, URL url) throws IOException {
+    public SNMessageChain image(Robot robot, URL url)
+            throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException {
         return plus(robot.uploadImg(url));
     }
 
@@ -104,12 +109,14 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, File file) throws IOException {
+    public SNMessageChain flashImage(Robot robot, File file)
+            throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
         return plus(new SNFlashImage(robot.uploadImg(file)));
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, URL url) throws IOException {
+    public SNMessageChain flashImage(Robot robot, URL url)
+            throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
         return plus(new SNFlashImage(robot.uploadImg(url)));
     }
 
