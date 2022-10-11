@@ -2,9 +2,9 @@
 
 <p align="center">一个通用聊天机器人框架，基于 JAVA 开发</p>
 
-控制台界面桥 : https://github.com/Ren-Pen/slimenano-bridge-cli
+控制台界面桥 : https://github.com/Ren-Pen/sn-bridge-cli
 
-Mirai 模块 : https://github.com/Ren-Pen/slimenano-mirai-model
+Mirai 模块 : https://github.com/Ren-Pen/sn-mirai-model
 
 ### 如何安装
 
