@@ -31,7 +31,12 @@ slimenano
 
 
 ### 如何运行
+Windows:
 ```shell
 java -Dlog4j.skipJansi=false -cp lib/*;extension/*;extension/lib/*;. com.slimenano.framework.RobotApplication
 ```
 
+Linux:
+```shell
+java -Dlog4j.skipJansi=false -cp lib/*:extension/*:extension/lib/*:. com.slimenano.framework.RobotApplication
+```
