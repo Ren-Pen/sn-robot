@@ -16,7 +16,6 @@ import com.slimenano.sdk.framework.exception.BeanInitializationException;
 import com.slimenano.sdk.framework.ui.IGUIBridge;
 import com.slimenano.sdk.logger.Marker;
 import com.slimenano.sdk.plugin.BasePlugin;
-import com.slimenano.sdk.plugin.Plugin;
 import com.slimenano.sdk.plugin.PluginInformation;
 
 import java.io.File;
@@ -50,7 +49,7 @@ public class PluginLoader {
         log.debug("{} 正在注入插件内置对象", pluginClass);
         // 放置插件预留可操作对象
 
-        if (pluginClass.getAnnotation(Plugin.class) == null) {
+        if (!BasePlugin.class.isAssignableFrom(pluginClass)) {
             throw new BeanInitializationException(pluginClass + " 不是一个插件类！");
         }
 
