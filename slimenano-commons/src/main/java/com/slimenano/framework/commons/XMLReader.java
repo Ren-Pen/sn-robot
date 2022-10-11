@@ -191,22 +191,25 @@ public class XMLReader {
             }
 
 
-            if (emo instanceof LinkedList && clazz.isArray()) {
-                T array = (T) Array.newInstance(clazz.getComponentType(), ((LinkedList) emo).size());
-                for (int i = 0; i < ((LinkedList) emo).size(); i++) {
-                    Array.set(array, i, EMO2Bean(((LinkedList<?>) emo).get(i), clazz.getComponentType()));
+            if (emo instanceof Collection && clazz.isArray()) {
+                Object[] objects = ((LinkedList<?>) emo).toArray();
+                T array = (T) Array.newInstance(clazz.getComponentType(), objects.length);
+
+                for (int i = 0; i < objects.length; i++) {
+                    Array.set(array, i, EMO2Bean(objects[i], clazz.getComponentType()));
                 }
                 return array;
             }
 
-            if (emo instanceof String && clazz.isArray()){
-                return (T) new String[]{(String) emo};
-            }
+            if (clazz.isArray()){
 
-            if (emo instanceof HashMap && clazz.isArray()){
-                T array = (T) Array.newInstance(clazz.getComponentType(), 1);
-                Array.set(array, 0, EMO2Bean(emo, clazz.getComponentType()));
+                // 数组的类型
+                Class<?> type = clazz.getComponentType();
+                Object o = EMO2Bean(emo, type);
+                T array = (T) Array.newInstance(type, 1);
+                Array.set(array, 0, o);
                 return array;
+
             }
 
             if (emo instanceof HashMap && Map.class.isAssignableFrom(clazz)){

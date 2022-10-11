@@ -1,5 +1,7 @@
 package com.slimenano.framework.access;
 
+import com.slimenano.framework.commons.ClassUtils;
+import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -28,18 +30,18 @@ public class AccessInterceptor implements MethodInterceptor {
 
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-        AccessControl accessControl = method.getAnnotation(AccessControl.class);
         method.setAccessible(false);
+
+        AccessControl accessControl = ClassUtils.getMethodAnnotation(method, AccessControl.class);
         if (accessControl == null){
             return method.invoke(robot, objects);
         }else{
-
             if (manager.canAccess(information, accessControl.require())) {
                 log.debug("{} 放行插件执行方法：{}", information.getPath(), method.getName());
                 return method.invoke(robot, objects);
             }else{
                 log.warn("{} 插件行为未授权：{} 需要权限：{}", information.getPath(), method.getName(), Permission.toString("[%s] %s%n", accessControl.require()));
-                return null;
+                throw new NoOperationPermissionException(accessControl.require());
             }
         }
 

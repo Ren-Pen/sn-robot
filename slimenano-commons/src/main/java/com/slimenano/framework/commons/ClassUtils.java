@@ -2,11 +2,58 @@ package com.slimenano.framework.commons;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 
 public class ClassUtils {
+
+    public static <T extends Annotation> T getMethodAnnotation(Method method, Class<T> aClass){
+
+        Class<?> clazz = method.getDeclaringClass();
+        if (clazz == Object.class) return null;
+        T annotation = (T) method.getAnnotation(aClass);
+        if (annotation != null) return annotation;
+
+        Class<?> superclass = clazz.getSuperclass();
+        if (superclass != null) {
+            Method nextMethod = null;
+            try {
+                nextMethod = superclass.getDeclaredMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException ignore) {
+            }
+            if (nextMethod == null) {
+                try {
+                    nextMethod = superclass.getMethod(method.getName(), method.getParameterTypes());
+                } catch (NoSuchMethodException ignore) {
+                }
+            }
+            if (nextMethod != null) {
+                T methodAnnotation = getMethodAnnotation(nextMethod, aClass);
+                if (methodAnnotation != null) return methodAnnotation;
+            }
+        }
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            Method nextMethod = null;
+            try {
+                nextMethod = anInterface.getDeclaredMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException ignore) {
+            }
+            if (nextMethod == null) {
+                try {
+                    nextMethod = anInterface.getMethod(method.getName(), method.getParameterTypes());
+                } catch (NoSuchMethodException ignore) {
+                }
+            }
+            if (nextMethod != null) {
+                T methodAnnotation = getMethodAnnotation(nextMethod, aClass);
+                if (methodAnnotation != null) return methodAnnotation;
+            }
+        }
+        return null;
+    }
 
     public static List<Field> getAllField(Class<?> clazz) {
 
