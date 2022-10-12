@@ -80,10 +80,6 @@ public class PluginManager {
             information = pluginLoader.getInformation(classLoader);
             log.debug("{} 插件描述信息已读取：{}", information.getPath(), information);
 
-            if (information.getPath().startsWith("com.slimenano")){
-                throw new IllegalAccessException("由于安全性设置，应用程序禁止任何以com.slimenano为包名的类作为插件加载，请更换您的包名后重新构建插件！");
-            }
-
             // 检查冲突
             if (pluginMap.containsKey(information.getPath())) {
                 String conditionJarFileName = pluginMap.get(information.getPath()).getJarFile().getName();
