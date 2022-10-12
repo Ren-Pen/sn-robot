@@ -1,5 +1,6 @@
 package com.slimenano.sdk.robot.messages;
 
+import com.slimenano.sdk.robot.contact.SNContact;
 import com.slimenano.sdk.robot.exception.file.OverFileSizeMaxException;
 import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
@@ -92,15 +93,15 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     }
 
     @Override
-    public SNMessageChain image(Robot robot, File file)
+    public SNMessageChain image(Robot robot,SNContact contact, File file)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
-        return plus(robot.uploadImg(file));
+        return plus(robot.uploadImg(contact, file));
     }
 
     @Override
-    public SNMessageChain image(Robot robot, URL url)
+    public SNMessageChain image(Robot robot, SNContact contact, URL url)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException {
-        return plus(robot.uploadImg(url));
+        return plus(robot.uploadImg(contact, url));
     }
 
     @Override
@@ -109,15 +110,15 @@ public class SNMessageChain extends ArrayList<SNMessage> implements Plus {
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, File file)
+    public SNMessageChain flashImage(Robot robot,SNContact contact, File file)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
-        return plus(new SNFlashImage(robot.uploadImg(file)));
+        return plus(new SNFlashImage(robot.uploadImg(contact, file)));
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, URL url)
+    public SNMessageChain flashImage(Robot robot,SNContact contact, URL url)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException{
-        return plus(new SNFlashImage(robot.uploadImg(url)));
+        return plus(new SNFlashImage(robot.uploadImg(contact, url)));
     }
 
     @Override

@@ -100,5 +100,4 @@ public abstract class AbstractRobot implements Robot, InitializationBean {
         close();
     }
 
-
 }
