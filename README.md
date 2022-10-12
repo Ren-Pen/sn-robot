@@ -2,6 +2,28 @@
 
 <p align="center">一个通用聊天机器人框架，基于 JAVA 开发</p>
 
+### 注意：该项目仅用于学习！
+
+
+### 许可证
+
+
+    Copyright (C) 2022-2023  Ren-Pen and contributors.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 控制台界面桥 : https://github.com/Ren-Pen/sn-bridge-cli
 
 Mirai 模块 : https://github.com/Ren-Pen/sn-mirai-model
