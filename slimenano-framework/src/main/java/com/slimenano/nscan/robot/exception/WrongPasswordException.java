@@ -1,4 +1,4 @@
-package com.slimenano.sdk.robot.exception;
+package com.slimenano.nscan.robot.exception;
 
 public class WrongPasswordException extends LoginFailedException{
     public WrongPasswordException(String message) {

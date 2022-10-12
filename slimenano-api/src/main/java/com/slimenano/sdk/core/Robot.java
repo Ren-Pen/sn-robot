@@ -13,6 +13,7 @@ import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionExcepti
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedStatusException;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
+import com.slimenano.sdk.robot.messages.content.SNAudio;
 import com.slimenano.sdk.robot.messages.content.SNImage;
 import com.slimenano.sdk.robot.messages.meta.SNMessageSource;
 
@@ -237,7 +238,7 @@ public interface Robot {
      * @throws IOException                        上传文件失败时抛出
      */
     @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD, status = true)
-    SNImage uploadImg(File file)
+    SNImage uploadImg(SNContact contact, File file)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
     /**
@@ -254,7 +255,7 @@ public interface Robot {
      * @throws IOException                        下载文件失败或上传文件失败时抛出
      */
     @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD, status = true)
-    SNImage uploadImg(URL url, boolean forceUpdate)
+    SNImage uploadImg(SNContact contact, URL url, boolean forceUpdate)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
     /**
@@ -270,8 +271,36 @@ public interface Robot {
      * @throws IOException                        下载文件失败或上传文件失败时抛出
      */
     @AccessControl(require = Permission.BEHAVIOR_IMG_UPLOAD, status = true)
-    SNImage uploadImg(URL url)
+    SNImage uploadImg(SNContact contact, URL url)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+
+    /**
+     * 上传语音到服务器，获取语音对象
+     *
+     * @param file
+     *
+     * @return
+     *
+     * @throws NoOperationPermissionException     插件没有操作权限时抛出
+     * @throws UnsupportedRobotOperationException 机器人核心未实现该方法时抛出
+     * @throws OverFileSizeMaxException           上传文件太大导致异常
+     * @throws IOException                        下载文件失败或上传文件失败时抛出
+     */
+    SNAudio uploadAudio(SNContact contact, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+
+    /**
+     * 上传语音到服务器，获取语音对象
+     *
+     * @param url
+     *
+     * @return
+     *
+     * @throws NoOperationPermissionException     插件没有操作权限时抛出
+     * @throws UnsupportedRobotOperationException 机器人核心未实现该方法时抛出
+     * @throws OverFileSizeMaxException           上传文件太大导致异常
+     * @throws IOException                        下载文件失败或上传文件失败时抛出
+     */
+    SNAudio uploadAudio(SNContact contact, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
     /**
      * 戳一戳

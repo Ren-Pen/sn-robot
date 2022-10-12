@@ -86,11 +86,6 @@ public abstract class PackageScanner {
                 //通过class文件名得到文件名称以及类名称
                 className = className.replace(".class", "");
                 className = className.replace("/", ".");
-                // 安全性检查
-                if (loader != PackageScanner.class.getClassLoader() && (className.startsWith("com.slimenano"))){
-                    log.debug("跳过：{}", className);
-                    continue;
-                }
 
 
 

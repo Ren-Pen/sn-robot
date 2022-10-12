@@ -1,4 +1,4 @@
-package com.slimenano.sdk.framework;
+package com.slimenano.nscan.framework;
 
 import com.slimenano.sdk.framework.annotations.Instance;
 import com.slimenano.sdk.framework.ui.IGUIBridge;

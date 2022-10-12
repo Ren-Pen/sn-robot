@@ -1,6 +1,7 @@
 package com.slimenano.sdk.robot.messages;
 
 import com.slimenano.sdk.core.Robot;
+import com.slimenano.sdk.robot.contact.SNContact;
 import com.slimenano.sdk.robot.exception.file.OverFileSizeMaxException;
 import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
@@ -27,15 +28,15 @@ public interface Plus {
 
     SNMessageChain image(String id);
 
-    SNMessageChain image(Robot robot, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+    SNMessageChain image(Robot robot, SNContact contact, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
-    SNMessageChain image(Robot robot, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+    SNMessageChain image(Robot robot, SNContact contact, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
     SNMessageChain flashImage(String id);
 
-    SNMessageChain flashImage(Robot robot, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+    SNMessageChain flashImage(Robot robot, SNContact contact, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
-    SNMessageChain flashImage(Robot robot, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
+    SNMessageChain flashImage(Robot robot, SNContact contact, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, OverFileSizeMaxException;
 
     SNMessageChain poke(SNPoke poke);
 

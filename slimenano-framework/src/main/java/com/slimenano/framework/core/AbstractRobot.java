@@ -3,16 +3,16 @@ package com.slimenano.framework.core;
 import com.slimenano.framework.event.EventChannelImpl;
 import com.slimenano.framework.event.impl.bot.LoginEvent;
 import com.slimenano.sdk.core.Robot;
-import com.slimenano.sdk.framework.BeanContext;
+import com.slimenano.nscan.framework.BeanContext;
 import com.slimenano.sdk.framework.InitializationBean;
-import com.slimenano.sdk.framework.SystemInstance;
+import com.slimenano.nscan.framework.SystemInstance;
 import com.slimenano.sdk.framework.annotations.Mount;
 import com.slimenano.sdk.framework.ui.IGUIBridge;
 import com.slimenano.sdk.logger.Marker;
-import com.slimenano.sdk.robot.exception.InternalModelFailedException;
-import com.slimenano.sdk.robot.exception.LoginFailedException;
-import com.slimenano.sdk.robot.exception.ServerFailedException;
-import com.slimenano.sdk.robot.exception.WrongPasswordException;
+import com.slimenano.nscan.robot.exception.InternalModelFailedException;
+import com.slimenano.nscan.robot.exception.LoginFailedException;
+import com.slimenano.nscan.robot.exception.ServerFailedException;
+import com.slimenano.nscan.robot.exception.WrongPasswordException;
 import com.slimenano.sdk.robot.messages.SNContentMessage;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +99,5 @@ public abstract class AbstractRobot implements Robot, InitializationBean {
     public final void onDestroy() throws Exception {
         close();
     }
-
 
 }

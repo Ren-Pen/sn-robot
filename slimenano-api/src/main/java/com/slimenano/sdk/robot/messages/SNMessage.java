@@ -1,6 +1,7 @@
 package com.slimenano.sdk.robot.messages;
 
 import com.slimenano.sdk.core.Robot;
+import com.slimenano.sdk.robot.contact.SNContact;
 import com.slimenano.sdk.robot.messages.content.*;
 import com.slimenano.sdk.robot.messages.meta.SNMessageSource;
 import com.slimenano.sdk.robot.messages.meta.SNQuoteReply;
@@ -53,13 +54,13 @@ public abstract class SNMessage implements Plus {
     }
 
     @Override
-    public SNMessageChain image(Robot robot, File file) throws IOException {
-        return plus(robot.uploadImg(file));
+    public SNMessageChain image(Robot robot, SNContact contact, File file) throws IOException {
+        return plus(robot.uploadImg(contact, file));
     }
 
     @Override
-    public SNMessageChain image(Robot robot, URL url) throws IOException {
-        return plus(robot.uploadImg(url));
+    public SNMessageChain image(Robot robot,SNContact contact, URL url) throws IOException {
+        return plus(robot.uploadImg(contact, url));
     }
 
 
@@ -69,13 +70,13 @@ public abstract class SNMessage implements Plus {
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, File file) throws IOException {
-        return plus(new SNFlashImage(robot.uploadImg(file)));
+    public SNMessageChain flashImage(Robot robot,SNContact contact, File file) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(contact, file)));
     }
 
     @Override
-    public SNMessageChain flashImage(Robot robot, URL url) throws IOException {
-        return plus(new SNFlashImage(robot.uploadImg(url)));
+    public SNMessageChain flashImage(Robot robot,SNContact contact, URL url) throws IOException {
+        return plus(new SNFlashImage(robot.uploadImg(contact, url)));
     }
 
     @Override

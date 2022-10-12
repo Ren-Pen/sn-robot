@@ -1,9 +1,6 @@
-package com.slimenano.sdk.framework;
+package com.slimenano.nscan.framework;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.slimenano.framework.RobotApplication;
 import com.slimenano.framework.commons.ClassUtils;
@@ -12,6 +9,8 @@ import com.slimenano.sdk.config.ConfigFields;
 import com.slimenano.sdk.config.ConfigLocation;
 import com.slimenano.sdk.config.Configuration;
 import com.slimenano.sdk.config.DefaultConfiguration;
+import com.slimenano.sdk.framework.Context;
+import com.slimenano.sdk.framework.InitializationBean;
 import com.slimenano.sdk.framework.annotations.Collections;
 import com.slimenano.sdk.framework.annotations.*;
 import com.slimenano.sdk.framework.exception.BeanException;
@@ -23,7 +22,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
@@ -52,31 +53,54 @@ public class BeanContext implements Context {
     @Getter
     private final Class<?> contextClass;
     private final File configFile;
-    private final String scanPackage;
+    private final Set<String> scanPackage;
 
     @Getter
     private final Map<String, Object> beanNameMap = new LinkedHashMap<>();
 
+    private final Pattern classPattern = Pattern.compile("^([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*$");
+    private final HashMap<String, Object> configuration;
     private volatile int status = CREATED;
     private ClassLoader beanClassLoader = this.getClass().getClassLoader();
-
-    private HashMap<String, Object> configuration;
 
     private BeanContext(Class<?> createClass) throws IOException {
         log.debug("{} 准备构造对象上下文.", createClass.getName());
         this.contextClass = createClass;
         ScanPackageLocation scanPackageLocation = contextClass.getAnnotation(ScanPackageLocation.class);
         if (scanPackageLocation != null) {
-            scanPackage = scanPackageLocation.value();
+            scanPackage = new HashSet<>(Arrays.asList(scanPackageLocation.value()));
         } else {
-            scanPackage = contextClass.getPackage().getName();
+            scanPackage = new HashSet<>();
+            scanPackage.add(contextClass.getPackage().getName());
         }
+        boolean isSys = ClassUtils.hasOrgAnnotation(createClass, ISystem.class);
+        if (isSys) {
+            File file = new File("extension" + File.separator + "extensions");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                int lno = 1;
+                while ((line = reader.readLine()) != null && lno++ > 0) {
+                    if (line.startsWith("#")) {
+                        continue;
+                    }
+                    if (!classPattern.matcher(line).matches()) {
+                        log.error("文件 extensions 错误 行：{}", lno);
+                        continue;
+                    }
+                    scanPackage.add(line);
+                }
+            }
+        }
+
 
         ConfigLocation configLocation = createClass.getAnnotation(ConfigLocation.class);
 
         if (configLocation != null) {
             String d = dataDirectory + createClass.getName() + "/";
-            if (ClassUtils.hasOrgAnnotation(createClass, ISystem.class)) {
+            if (isSys) {
                 d = dataDirectory;
             }
             File dir = new File(d);
@@ -220,7 +244,9 @@ public class BeanContext implements Context {
     private void scanAndInitializeBean() throws Exception {
         Set<Class<?>> set = new LinkedHashSet<>();
         long time = System.currentTimeMillis();
-        createScanner(set).scanPackage(scanPackage, beanClassLoader);
+        for (String s : scanPackage) {
+            createScanner(set).scanPackage(s, beanClassLoader);
+        }
         log.debug("{} 包扫描耗时：{}ms", contextClass, System.currentTimeMillis() - time);
         this.status = SCANNED;
         ClassLoader appClassLoader = Thread.currentThread().getContextClassLoader();

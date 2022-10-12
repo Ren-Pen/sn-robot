@@ -1,6 +1,9 @@
 package com.slimenano.framework.event;
 
 import com.slimenano.framework.event.impl.ISysEvent;
+import com.slimenano.nscan.framework.BeanContext;
+import com.slimenano.nscan.framework.ISystem;
+import com.slimenano.nscan.framework.SystemInstance;
 import com.slimenano.sdk.event.annotations.*;
 import com.slimenano.sdk.event.annotations.EventListener;
 import com.slimenano.sdk.framework.*;

@@ -7,6 +7,7 @@ import com.slimenano.sdk.robot.exception.permission.BotNoPermissionException;
 import com.slimenano.sdk.robot.exception.permission.NoOperationPermissionException;
 import com.slimenano.sdk.robot.exception.unsupported.UnsupportedRobotOperationException;
 import com.slimenano.sdk.robot.messages.SNMessageChain;
+import com.slimenano.sdk.robot.messages.content.SNAudio;
 import com.slimenano.sdk.robot.messages.content.SNImage;
 import com.slimenano.sdk.robot.messages.meta.SNMessageSource;
 
@@ -100,20 +101,30 @@ public abstract class BaseRobot extends AbstractRobot {
     }
 
     @Override
-    public SNImage uploadImg(File file)
+    public SNImage uploadImg(SNContact contact,File file)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 
     @Override
-    public SNImage uploadImg(URL url, boolean forceUpdate)
+    public SNImage uploadImg(SNContact contact,URL url, boolean forceUpdate)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 
     @Override
-    public SNImage uploadImg(URL url)
+    public SNImage uploadImg(SNContact contact,URL url)
             throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException {
+        throw new UnsupportedRobotOperationException("当前核心未实现操作");
+    }
+
+    @Override
+    public SNAudio uploadAudio(SNContact contact, File file) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, com.slimenano.sdk.robot.exception.file.OverFileSizeMaxException {
+        throw new UnsupportedRobotOperationException("当前核心未实现操作");
+    }
+
+    @Override
+    public SNAudio uploadAudio(SNContact contact, URL url) throws IOException, UnsupportedRobotOperationException, NoOperationPermissionException, com.slimenano.sdk.robot.exception.file.OverFileSizeMaxException {
         throw new UnsupportedRobotOperationException("当前核心未实现操作");
     }
 

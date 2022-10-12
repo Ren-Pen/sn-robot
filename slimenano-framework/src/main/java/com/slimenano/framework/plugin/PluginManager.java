@@ -10,8 +10,8 @@ import com.slimenano.framework.event.impl.plugin.PluginLoadFailEvent;
 import com.slimenano.framework.event.impl.plugin.PluginLoadedEvent;
 import com.slimenano.framework.event.impl.plugin.PluginPreLoadEvent;
 import com.slimenano.sdk.access.Permission;
-import com.slimenano.sdk.framework.BeanContext;
-import com.slimenano.sdk.framework.SystemInstance;
+import com.slimenano.nscan.framework.BeanContext;
+import com.slimenano.nscan.framework.SystemInstance;
 import com.slimenano.sdk.framework.annotations.Mount;
 import com.slimenano.sdk.framework.exception.BeanException;
 import com.slimenano.sdk.framework.ui.GUI_CONST;
@@ -79,10 +79,6 @@ public class PluginManager {
         try {
             information = pluginLoader.getInformation(classLoader);
             log.debug("{} 插件描述信息已读取：{}", information.getPath(), information);
-
-            if (information.getPath().startsWith("com.slimenano")){
-                throw new IllegalAccessException("由于安全性设置，应用程序禁止任何以com.slimenano为包名的类作为插件加载，请更换您的包名后重新构建插件！");
-            }
 
             // 检查冲突
             if (pluginMap.containsKey(information.getPath())) {
