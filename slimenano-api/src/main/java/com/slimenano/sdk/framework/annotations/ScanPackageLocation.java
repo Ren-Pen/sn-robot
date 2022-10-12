@@ -8,6 +8,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface ScanPackageLocation {
 
-    String value();
+    String[] value();
 
 }

@@ -42,6 +42,11 @@ public class DynamicJarClassLoader extends URLClassLoader {
         }
     }
 
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        return loadClass(name);
+    }
+
     // 不允许加载核心资源
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
@@ -60,7 +65,7 @@ public class DynamicJarClassLoader extends URLClassLoader {
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
-                if (!name.startsWith("org.snc")) {
+                if (name.startsWith("com.slimenano.sdk")) {
                     try {
                         if (this.getParent() != null) {
                             c = this.getParent().loadClass(name);
