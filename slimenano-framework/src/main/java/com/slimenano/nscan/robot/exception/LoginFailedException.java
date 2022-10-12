@@ -1,4 +1,4 @@
-package com.slimenano.sdk.robot.exception;
+package com.slimenano.nscan.robot.exception;
 
 /**
  * 登录失败异常

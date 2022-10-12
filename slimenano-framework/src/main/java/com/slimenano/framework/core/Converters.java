@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import com.slimenano.framework.commons.ClassUtils;
 import com.slimenano.sdk.framework.Context;
 import com.slimenano.sdk.framework.InitializationBean;
-import com.slimenano.sdk.framework.SystemInstance;
+import com.slimenano.nscan.framework.SystemInstance;
 import com.slimenano.sdk.framework.annotations.Mount;
-import com.slimenano.sdk.framework.converters.Converter;
+import com.slimenano.nscan.framework.converters.Converter;
 import com.slimenano.sdk.logger.Marker;
 
 import java.util.HashMap;

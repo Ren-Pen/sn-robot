@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import com.slimenano.sdk.config.BaseConfiguration;
 import com.slimenano.sdk.config.Configuration;
 import com.slimenano.sdk.config.DefaultConfiguration;
-import com.slimenano.sdk.framework.SystemInstance;
+import com.slimenano.nscan.framework.SystemInstance;
 
 import java.util.HashMap;
 

@@ -2,7 +2,7 @@ package com.slimenano.framework.plugin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import com.slimenano.sdk.framework.BeanContext;
+import com.slimenano.nscan.framework.BeanContext;
 import com.slimenano.sdk.plugin.BasePlugin;
 import com.slimenano.sdk.plugin.PluginInformation;
 

@@ -1,9 +1,6 @@
-package com.slimenano.sdk.framework;
+package com.slimenano.nscan.framework;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.slimenano.framework.RobotApplication;
 import com.slimenano.framework.commons.ClassUtils;
@@ -12,6 +9,8 @@ import com.slimenano.sdk.config.ConfigFields;
 import com.slimenano.sdk.config.ConfigLocation;
 import com.slimenano.sdk.config.Configuration;
 import com.slimenano.sdk.config.DefaultConfiguration;
+import com.slimenano.sdk.framework.Context;
+import com.slimenano.sdk.framework.InitializationBean;
 import com.slimenano.sdk.framework.annotations.Collections;
 import com.slimenano.sdk.framework.annotations.*;
 import com.slimenano.sdk.framework.exception.BeanException;

@@ -1,4 +1,4 @@
-package com.slimenano.sdk.framework.converters;
+package com.slimenano.nscan.framework.converters;
 
 import com.slimenano.sdk.framework.annotations.GenericClassField;
 import com.slimenano.sdk.framework.annotations.Instance;
